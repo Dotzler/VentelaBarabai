@@ -1,3 +1,4 @@
+import 'package:SneakerSpace/app/modules/order/views/order_view.dart';
 import 'package:get/get.dart';
 
 import '../modules/article_detail/bindings/article_detail_bindings.dart';
@@ -83,6 +84,10 @@ class AppPages {
     GetPage(
       name: _Paths.SETTINGS,
       page: () => SettingsView(),
+    ),
+    GetPage(
+      name: _Paths.ORDER,
+      page: () => OrderPage(),
     ),
   ];
 }

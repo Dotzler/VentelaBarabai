@@ -1,11 +1,13 @@
-import 'package:flutter/material.dart';
+import 'package:SneakerSpace/app/modules/cart_page/views/cart_view.dart';
+import 'package:SneakerSpace/app/modules/chat_page/views/chat_view.dart';
+import 'package:SneakerSpace/app/modules/order/views/order_view.dart';
+import 'package:SneakerSpace/app/modules/product/views/product_view.dart';
+import 'package:SneakerSpace/app/modules/profile_page/views/profile_view.dart';
 import 'package:SneakerSpace/app/modules/store_page/controllers/store_controller.dart';
+import 'package:SneakerSpace/app/modules/wishlist_page/views/wishlist_view.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../http_screen/views/http_view.dart';
-import '../../cart_page/views/cart_view.dart';
-import '../../chat_page/views/chat_view.dart';
-import '../../profile_page/views/profile_view.dart';
-import '../../wishlist_page/views/wishlist_view.dart';
 
 class StorePage extends StatefulWidget {
   @override
@@ -42,6 +44,8 @@ class _StorePageState extends State<StorePage> {
               return WishlistPage(wishlist: wishlist);
             case 2:
               return CartPage();
+            case 3:
+              return OrderPage();
             default:
               return _buildHomePage(context);
           }
@@ -56,6 +60,7 @@ class _StorePageState extends State<StorePage> {
                 BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
                 BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'Wishlist'),
                 BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: 'Cart'),
+                BottomNavigationBarItem(icon: Icon(Icons.shopping_bag), label: 'Order'),
               ],
             )),
       ),
@@ -275,72 +280,77 @@ class _StorePageState extends State<StorePage> {
   }
 
   Widget _buildProductCard(String title, String assetPath, int price, double rating) {
-    return Container(
-      width: 150,
-      height: 300,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12.0),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey[200]!,
-            blurRadius: 10,
-            spreadRadius: 2,
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          Image.asset(
-            assetPath,
-            width: 100,
-            height: 100,
-            fit: BoxFit.contain,
-          ),
-          SizedBox(height: 8),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
+    return GestureDetector(
+      onTap: () {
+        Get.to(ProductPage(title: title, price: price, imagePath: assetPath));
+      },
+      child: Container(
+        width: 150,
+        height: 300,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey[200]!,
+              blurRadius: 10,
+              spreadRadius: 2,
             ),
-          ),
-          SizedBox(height: 4),
-          Text(
-            "\IDR $price",
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey,
+          ],
+        ),
+        child: Column(
+          children: [
+            Image.asset(
+              assetPath,
+              width: 100,
+              height: 100,
+              fit: BoxFit.contain,
             ),
-          ),
-          SizedBox(height: 4),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.star,
-                color: Colors.amber,
+            SizedBox(height: 8),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
               ),
-              Text(
-                "$rating/5",
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey,
+            ),
+            SizedBox(height: 4),
+            Text(
+              "\IDR $price",
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey,
+              ),
+            ),
+            SizedBox(height: 4),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.star,
+                  color: Colors.amber,
                 ),
-              ),
-            ],
-          ),
-          SizedBox(height: 8),
-          ElevatedButton(
-            onPressed: () {
-              _addToWishlist(title, assetPath);
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Color(0xFFD3A335),
+                Text(
+                  "$rating/5",
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey,
+                  ),
+                ),
+              ],
             ),
-            child: Text("Add to Wishlist"),
-          ),
-        ],
+            SizedBox(height: 8),
+            ElevatedButton(
+              onPressed: () {
+                _addToWishlist(title, assetPath);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFFD3A335),
+              ),
+              child: Text("Add to Wishlist"),
+            ),
+          ],
+        ),
       ),
     );
   }

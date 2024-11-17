@@ -25,6 +25,9 @@ abstract class Routes {
   static const PRODUCT_PAGE = _Paths.PRODUCT_PAGE;
   static const MICROPHONE = _Paths.MICROPHONE;
   static const SETTINGS = _Paths.SETTINGS;
+  static const PRODUCT = _Paths.PRODUCT;
+  static const ORDER = _Paths.ORDER;
+  static const REVIEW = _Paths.REVIEW;
 }
 
 abstract class _Paths {
@@ -52,4 +55,7 @@ abstract class _Paths {
   static const PRODUCT_PAGE = '/product-page';
   static const MICROPHONE = '/microphone';
   static const SETTINGS = '/settings';
+  static const PRODUCT = '/product';
+  static const ORDER = '/order';
+  static const REVIEW = '/review';
 }

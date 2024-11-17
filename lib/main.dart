@@ -9,10 +9,12 @@ import 'package:SneakerSpace/app/modules/article_detail/bindings/article_detail_
 import 'package:SneakerSpace/app/modules/article_detail/views/article_detail_view.dart';
 import 'package:SneakerSpace/app/modules/article_detail/views/article_detail_web_view.dart';
 import 'package:SneakerSpace/app/modules/home/views/home_view.dart';
+import 'package:get_storage/get_storage.dart';
 import 'app/routes/app_pages.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await GetStorage.init();
 
   await Firebase.initializeApp();
   await NotificationService().initNotifications();

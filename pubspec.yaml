@@ -23,6 +23,8 @@ dependencies:
   flutter_local_notifications: ^17.2.4
   speech_to_text: ^7.0.0
   audioplayers: ^5.2.1
+  get_storage: ^2.1.1
+  video_player: ^2.9.2
 
 dev_dependencies: 
   flutter_lints: ^2.0.0
