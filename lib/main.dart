@@ -1,21 +1,22 @@
+import 'package:SneakerSpace/app/modules/cart_page/controllers/cart_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/app/data/services/http_controller.dart';
-import 'package:flutter_application_1/app/data/services/notification_service.dart';
+import 'package:SneakerSpace/app/modules/settings/controllers/settings_controller.dart';
 import 'package:get/get.dart';
-import 'package:firebase_core/firebase_core.dart'; // Import Firebase Core
-import 'package:flutter_application_1/app/modules/article_detail/bindings/article_detail_bindings.dart';
-import 'package:flutter_application_1/app/modules/article_detail/views/article_detail_view.dart';
-import 'package:flutter_application_1/app/modules/article_detail/views/article_detail_web_view.dart';
-import 'package:flutter_application_1/app/modules/home/views/home_view.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:SneakerSpace/app/data/services/notification_service.dart';
+import 'package:SneakerSpace/app/data/services/http_controller.dart';
+import 'package:SneakerSpace/app/modules/article_detail/bindings/article_detail_bindings.dart';
+import 'package:SneakerSpace/app/modules/article_detail/views/article_detail_view.dart';
+import 'package:SneakerSpace/app/modules/article_detail/views/article_detail_web_view.dart';
+import 'package:SneakerSpace/app/modules/home/views/home_view.dart';
 import 'app/routes/app_pages.dart';
 
 void main() async {
-  // Pastikan widget sudah diinisialisasi sebelum Firebase dijalankan
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Inisialisasi Firebase
   await Firebase.initializeApp();
   await NotificationService().initNotifications();
+  Get.lazyPut<CartController>(() => CartController());
 
   Get.put(HttpController());
 
@@ -23,28 +24,46 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
+  final SettingsController settingsController = Get.put(SettingsController());
+
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Sneaker Space',
       initialRoute: Routes.HOME,
       getPages: [
-        // Halaman utama
         GetPage(
           name: Routes.HOME,
-          page: () => HomePage(),
+          page: () => WillPopScope(
+            onWillPop: () async {
+              settingsController.pauseAudio();
+              return true;
+            },
+            child: HomePage(),
+          ),
         ),
-        // Halaman detail artikel dengan Binding untuk ArticleDetailController
         GetPage(
           name: Routes.ARTICLE_DETAILS,
-          page: () => ArticleDetailPage(article: Get.arguments),
-          binding: ArticleDetailBinding(), // Inisialisasi controller
+          page: () => WillPopScope(
+            onWillPop: () async {
+              settingsController.pauseAudio();
+              return true;
+            },
+            child: ArticleDetailPage(article: Get.arguments),
+          ),
+          binding: ArticleDetailBinding(),
         ),
-        // Halaman WebView artikel dengan Binding
         GetPage(
           name: Routes.ARTICLE_DETAILS_WEBVIEW,
-          page: () => ArticleDetailWebView(article: Get.arguments),
-          binding: ArticleDetailBinding(), // Inisialisasi controller
+          page: () => WillPopScope(
+            onWillPop: () async {
+              settingsController.pauseAudio();
+              return true;
+            },
+            child: ArticleDetailWebView(article: Get.arguments),
+          ),
+          binding: ArticleDetailBinding(),
         ),
       ],
     );

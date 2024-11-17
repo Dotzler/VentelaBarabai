@@ -22,6 +22,9 @@ abstract class Routes {
   static const STORE_PAGE = _Paths.STORE_PAGE;
   static const WISHLIST_PAGE = _Paths.WISHLIST_PAGE;
   static const EDIT_PROFILE_PAGE = _Paths.EDIT_PROFILE_PAGE;
+  static const PRODUCT_PAGE = _Paths.PRODUCT_PAGE;
+  static const MICROPHONE = _Paths.MICROPHONE;
+  static const SETTINGS = _Paths.SETTINGS;
 }
 
 abstract class _Paths {
@@ -46,4 +49,7 @@ abstract class _Paths {
   static const STORE_PAGE = '/store-page';
   static const WISHLIST_PAGE = '/wishlist-page';
   static const EDIT_PROFILE_PAGE = '/edit-profile-page';
+  static const PRODUCT_PAGE = '/product-page';
+  static const MICROPHONE = '/microphone';
+  static const SETTINGS = '/settings';
 }

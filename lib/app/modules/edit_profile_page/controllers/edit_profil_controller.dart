@@ -1,4 +1,4 @@
-import 'package:flutter_application_1/app/auth_controller.dart';
+import 'package:SneakerSpace/app/auth_controller.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 

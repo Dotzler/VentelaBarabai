@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/app/auth_controller.dart';
+import 'package:SneakerSpace/app/auth_controller.dart';
 import 'package:get/get.dart';
 
 class SignUpPage extends StatefulWidget {

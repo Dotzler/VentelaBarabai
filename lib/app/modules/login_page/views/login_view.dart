@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/app/auth_controller.dart';
-import 'package:flutter_application_1/app/modules/signup_page/views/signup_view.dart';
+import 'package:SneakerSpace/app/auth_controller.dart';
+import 'package:SneakerSpace/app/modules/signup_page/views/signup_view.dart';
 import 'package:get/get.dart';
 
 class LoginPage extends StatefulWidget {

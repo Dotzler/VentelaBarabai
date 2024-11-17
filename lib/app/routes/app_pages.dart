@@ -10,7 +10,9 @@ import '../modules/home/views/home_view.dart';
 import '../modules/http_screen/bindings/http_binding.dart';
 import '../modules/http_screen/views/http_view.dart';
 import '../modules/login_page/views/login_view.dart';
+import '../modules/microphone/views/microphone_view.dart';
 import '../modules/profile_page/views/profile_view.dart';
+import '../modules/settings/views/settings_view.dart';
 import '../modules/signup_page/views/signup_view.dart';
 import '../modules/store_page/views/store_view.dart';
 import '../modules/wishlist_page/views/wishlist_view.dart';
@@ -73,6 +75,14 @@ class AppPages {
       name: _Paths.ARTICLE_DETAILS_WEBVIEW,
       page: () => ArticleDetailWebView(article: Get.arguments),
       binding: ArticleDetailBinding(),
+    ),
+    GetPage(
+      name: _Paths.MICROPHONE,
+      page: () => MicrophonePage(),
+    ),
+    GetPage(
+      name: _Paths.SETTINGS,
+      page: () => SettingsView(),
     ),
   ];
 }

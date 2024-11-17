@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/app/modules/profile_page/controllers/profil_controller.dart';
-import 'package:flutter_application_1/app/auth_controller.dart';
-import 'package:flutter_application_1/app/storage_controller.dart';
-import 'package:flutter_application_1/app/modules/edit_profile_page/views/edit_profil_view.dart';
+import 'package:SneakerSpace/app/auth_controller.dart';
+import 'package:SneakerSpace/app/modules/edit_profile_page/views/edit_profil_view.dart';
+import 'package:SneakerSpace/app/modules/profile_page/controllers/profil_controller.dart';
+import 'package:SneakerSpace/app/storage_controller.dart';
 import 'package:get/get.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -127,6 +127,17 @@ class ProfilePage extends StatelessWidget {
               trailing: Icon(Icons.arrow_forward),
               onTap: () {
                 Get.to(() => EditProfileView());  // Navigate to EditProfileView
+              },
+            ),
+
+            // Settings button
+            ListTile(
+              leading: Icon(Icons.music_note),
+              title: Text('Music Settings'),
+              subtitle: Text('Change Your Music'),
+              trailing: Icon(Icons.arrow_forward),
+              onTap: () {
+                profileController.navigateToSettings();
               },
             ),
 

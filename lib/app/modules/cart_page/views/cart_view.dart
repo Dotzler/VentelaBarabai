@@ -1,68 +1,69 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../controllers/cart_controller.dart';
 
-class CartPage extends StatefulWidget {
-  const CartPage({super.key});
-
-  @override
-  _CartPageState createState() => _CartPageState();
-}
-
-class _CartPageState extends State<CartPage> {
-  // Simulating quantities and prices for each cart item
-  List<int> quantities = [ 1, 1, 1];
-  List<double> prices = [2100000, 3000000, 1500000];
+class CartPage extends StatelessWidget {
+  final CartController cartController = Get.find<CartController>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color(0xFFD3A335),
-        centerTitle: true,
-        title: Text(
-          "Cart",
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: const Color.fromARGB(255, 0, 0, 0),
-          ),
-        ),
-      ),
       backgroundColor: Colors.white,
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.all(16.0),
-              children: List.generate(
-                quantities.length,
-                (index) => _buildCartItem(index),
-              ),
-            ),
-          ),
-          _buildTotalSection(),
-        ],
-      ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ElevatedButton(
-          onPressed: () {
-            // Handle checkout
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Color(0xFFD3A335),
-            padding: EdgeInsets.symmetric(vertical: 8.0),
-          ),
-          child: Text(
-            'CHECK OUT',
-            style: TextStyle(fontSize: 18),
-            selectionColor: Colors.white,
-          ),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFFD3A335),
+        centerTitle: true,
+        title: const Text(
+          "Cart",
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
       ),
+      body: Obx(() => cartController.cartItems.isEmpty
+          ? const Center(
+              child: Text(
+                "Keranjang Kamu Kosong!",
+                style: TextStyle(fontSize: 18, color: Colors.grey, fontStyle: FontStyle.italic),
+              ),
+            )
+          : Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ListView.builder(
+                itemCount: cartController.cartItems.length,
+                itemBuilder: (context, index) {
+                  final item = cartController.cartItems[index];
+                  return _buildCartItem(item, index);
+                },
+              ),
+            )),
+      bottomNavigationBar: Obx(() {
+        return cartController.cartItems.isEmpty
+            ? const SizedBox.shrink() // Ini untuk mengembalikan widget kosong jika keranjang kosong
+            : Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _buildTotalSection(),
+                    const SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: () {
+                        // Handle checkout
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFD3A335),
+                      ),
+                      child: const Text(
+                        'CHECK OUT',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+      }),
     );
   }
 
-  Widget _buildCartItem(int index) {
+  Widget _buildCartItem(Map<String, dynamic> item, int index) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16.0),
       padding: const EdgeInsets.all(16.0),
@@ -71,7 +72,7 @@ class _CartPageState extends State<CartPage> {
         borderRadius: BorderRadius.circular(12.0),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey[200]!,
+            color: Colors.grey[300]!,
             blurRadius: 10,
             spreadRadius: 2,
           ),
@@ -79,48 +80,59 @@ class _CartPageState extends State<CartPage> {
       ),
       child: Row(
         children: [
-          Placeholder(
-            fallbackHeight: 60,
-            fallbackWidth: 60,
-          ), // Replace with Image widget for the product image
-          SizedBox(width: 16),
+          // Gambar produk
+          Image.asset(
+            item['image'],
+            width: 60,
+            height: 60,
+            fit: BoxFit.cover,
+          ),
+          const SizedBox(width: 16),
+          // Detail produk
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Sneakers', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                Text('\IDR${prices[index]}'),
-                Text('Size: US 7'),
+                Text(
+                  item['title'],
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  'Rp ${item['price']}',
+                  style: const TextStyle(fontSize: 14),
+                ),
+                Text(
+                  'Size: ${item['size']}',
+                  style: const TextStyle(fontSize: 14),
+                ),
               ],
             ),
           ),
+          // Tombol - (kurang)
           IconButton(
             onPressed: () {
-              setState(() {
-                if (quantities[index] > 1) {
-                  quantities[index]--;
-                }
-              });
+              cartController.decreaseQuantity(index);
             },
-            icon: Icon(Icons.remove),
+            icon: const Icon(Icons.remove),
           ),
-          Text('${quantities[index]}'), // Quantity
+          // Jumlah item
+          Text('${item['quantity']}'),
+          // Tombol + (tambah)
           IconButton(
             onPressed: () {
-              setState(() {
-                quantities[index]++;
-              });
+              cartController.increaseQuantity(index);
             },
-            icon: Icon(Icons.add),
+            icon: const Icon(Icons.add),
           ),
+          // Tombol delete (hapus)
           IconButton(
             onPressed: () {
-              setState(() {
-                quantities.removeAt(index);
-                prices.removeAt(index); // Remove the item from cart
-              });
+              cartController.removeItem(index);
             },
-            icon: Icon(Icons.delete),
+            icon: const Icon(Icons.delete, color: Colors.red),
           ),
         ],
       ),
@@ -128,26 +140,23 @@ class _CartPageState extends State<CartPage> {
   }
 
   Widget _buildTotalSection() {
-    double totalPrice = 0;
-    for (int i = 0; i < quantities.length; i++) {
-      totalPrice += quantities[i] * prices[i];
-    }
+    final cartController = Get.find<CartController>();
+    double totalPrice = cartController.cartItems.fold(0, (sum, item) {
+      return sum + (item['price'] * item['quantity']);
+    });
 
-    return Container(
-      padding: const EdgeInsets.all(16.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            'Total',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          Text(
-            '\IDR${totalPrice.toStringAsFixed(1)}', // Dynamically display total price
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-        ],
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const Text(
+          'Total',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        Text(
+          'Rp ${totalPrice.toStringAsFixed(0)}',
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+      ],
     );
   }
 }

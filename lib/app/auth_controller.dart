@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_application_1/app/modules/login_page/views/login_view.dart';
-import 'package:flutter_application_1/app/modules/store_page/views/store_view.dart';
+import 'package:SneakerSpace/app/modules/login_page/views/login_view.dart';
+import 'package:SneakerSpace/app/modules/store_page/views/store_view.dart';
 import 'package:get/get.dart';
 
 class AuthController extends GetxController {

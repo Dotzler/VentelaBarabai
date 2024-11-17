@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/app/modules/store_page/controllers/store_controller.dart';
+import 'package:SneakerSpace/app/modules/store_page/controllers/store_controller.dart';
 import 'package:get/get.dart';
 import '../../http_screen/views/http_view.dart';
 import '../../cart_page/views/cart_view.dart';

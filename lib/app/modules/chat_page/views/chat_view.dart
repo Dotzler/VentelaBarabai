@@ -1,33 +1,96 @@
 import 'package:flutter/material.dart';
+import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 class ChatPage extends StatefulWidget {
+  const ChatPage({super.key});
+
   @override
   _ChatPageState createState() => _ChatPageState();
 }
 
 class _ChatPageState extends State<ChatPage> {
-  List<String> messages = []; // List to store messages
-  final TextEditingController _controller = TextEditingController(); // Controller for the input field
-  int? _editingIndex; // Variable to keep track of the index being edited
+  List<String> messages = [];
+  final TextEditingController _controller = TextEditingController();
+  int? _editingIndex;
+
+  final stt.SpeechToText _speech = stt.SpeechToText();
+  bool _isListening = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initSpeech();
+  }
+
+  // Initialize Speech-to-Text functionality
+  void _initSpeech() async {
+    bool available = await _speech.initialize();
+    if (available) {
+      setState(() {
+        print("Speech-to-text is initialized and ready");
+      });
+    } else {
+      setState(() {
+        print("Speech-to-text initialization failed");
+      });
+    }
+  }
+
+  // Start or continue listening for speech
+  void _startListening() async {
+  if (!_isListening) {
+    await _speech.listen(
+      onResult: (result) {
+        setState(() {
+          _controller.text = result.recognizedWords;
+          _controller.selection = TextSelection.fromPosition(
+            TextPosition(offset: _controller.text.length),
+          );
+        });
+      },
+      listenFor: const Duration(seconds: 30),
+      partialResults: true,
+    );
+    setState(() {
+      _isListening = _speech.isListening;
+    });
+  }
+}
+
+  // Stop listening to microphone input
+  void _stopListening() async {
+    await _speech.stop();
+    setState(() {
+      _isListening = false;
+    });
+  }
+
+  // Toggle microphone state
+  void _toggleListening() {
+    if (_isListening) {
+      _stopListening();  // Stop listening if already listening
+    } else {
+      _startListening(); // Start listening if not listening
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Chat'),
-        backgroundColor: Color(0xFFD3A335),
+        title: const Text('Chat'),
+        backgroundColor: const Color(0xFFD3A335),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // Chat messages will be displayed here
             Expanded(
               child: ListView.builder(
                 itemCount: messages.length,
                 itemBuilder: (context, index) {
-                  bool isMe = index % 2 == 0; // Simulate the sender for demonstration
+                  bool isMe = index % 2 == 0;
                   return _buildChatBubble(messages[index], isMe, index);
                 },
               ),
@@ -39,19 +102,19 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
+  // Build the chat bubble for each message
   Widget _buildChatBubble(String message, bool isMe, int index) {
     return GestureDetector(
       onLongPress: () {
-        // Show options to edit or delete the message
         _showEditDeleteOptions(index);
       },
       child: Align(
         alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
         child: Container(
-          padding: EdgeInsets.all(12.0),
-          margin: EdgeInsets.symmetric(vertical: 5.0),
+          padding: const EdgeInsets.all(12.0),
+          margin: const EdgeInsets.symmetric(vertical: 5.0),
           decoration: BoxDecoration(
-            color: isMe ? Color(0xFFD3A335) : Colors.grey[200],
+            color: isMe ? const Color(0xFFD3A335) : Colors.grey[200],
             borderRadius: BorderRadius.circular(12.0),
           ),
           child: Text(
@@ -63,12 +126,13 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
+  // Build the message input field with mic button
   Widget _buildMessageInput() {
     return Row(
       children: [
         Expanded(
           child: TextField(
-            controller: _controller, // Set the controller
+            controller: _controller,
             decoration: InputDecoration(
               hintText: 'Type your message...',
               border: OutlineInputBorder(
@@ -77,23 +141,27 @@ class _ChatPageState extends State<ChatPage> {
             ),
           ),
         ),
-        SizedBox(width: 8),
+        const SizedBox(width: 8),
         IconButton(
-          icon: Icon(Icons.send, color: Color(0xFFD3A335)),
+          icon: Icon(
+            _isListening ? Icons.stop : Icons.mic,
+            color: const Color(0xFFD3A335),
+          ),
+          onPressed: _toggleListening, // Toggle the microphone state
+        ),
+        IconButton(
+          icon: const Icon(Icons.send, color: Color(0xFFD3A335)),
           onPressed: () {
-            // Get the text from the controller
             String message = _controller.text.trim();
             if (message.isNotEmpty) {
               setState(() {
                 if (_editingIndex != null) {
-                  // Update the existing message
                   messages[_editingIndex!] = message;
-                  _editingIndex = null; // Reset editing index
+                  _editingIndex = null;
                 } else {
-                  // Add the message to the list
                   messages.add(message);
                 }
-                _controller.clear(); // Clear the text field
+                _controller.clear();
               });
             }
           },
@@ -102,40 +170,39 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
+  // Show options to edit or delete message
   void _showEditDeleteOptions(int index) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Edit or Delete'),
-          content: Text('Would you like to edit or delete this message?'),
+          title: const Text('Edit or Delete'),
+          content: const Text('Would you like to edit or delete this message?'),
           actions: [
             TextButton(
               onPressed: () {
-                // Set the message for editing
                 setState(() {
                   _editingIndex = index;
-                  _controller.text = messages[index]; // Set the message in the input field for editing
+                  _controller.text = messages[index];
                 });
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop();
               },
-              child: Text('Edit'),
+              child: const Text('Edit'),
             ),
             TextButton(
               onPressed: () {
-                // Delete the message
                 setState(() {
                   messages.removeAt(index);
                 });
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop();
               },
-              child: Text('Delete'),
+              child: const Text('Delete'),
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop();
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
           ],
         );

@@ -1,7 +1,8 @@
+import 'package:SneakerSpace/app/auth_controller.dart';
+import 'package:SneakerSpace/app/modules/settings/views/settings_view.dart';
+import 'package:SneakerSpace/app/storage_controller.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:flutter_application_1/app/storage_controller.dart';
-import 'package:flutter_application_1/app/auth_controller.dart';
 
 class ProfileController extends GetxController {
   var selectedImagePath = ''.obs;
@@ -9,6 +10,11 @@ class ProfileController extends GetxController {
 
   final StorageController _storageController = Get.put(StorageController());
   final AuthController _authController = Get.put(AuthController());
+
+  // Function to navigate to SettingsView
+  void navigateToSettings() {
+    Get.to(() => SettingsView());
+  }
 
   // Function to select image from gallery
   Future<void> selectImageFromGallery() async {
