@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "4856728982",
+    "project_id": "sneakerspace-204ee",
+    "storage_bucket": "sneakerspace-204ee.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:4856728982:android:2cafbf2312a333f6b6e1b7",
+        "android_client_info": {
+          "package_name": "com.example.flutter_application_1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAqQIxtNDmT2A2H0sA2LS_sgzaK0sAzXlY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
