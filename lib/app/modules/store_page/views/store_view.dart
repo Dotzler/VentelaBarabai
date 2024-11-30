@@ -187,7 +187,9 @@ class _StorePageState extends State<StorePage> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFFD3A335),
                   ),
-                  child: Text("Shop Now"),
+                  child: Text(
+                    "Shop Now",
+                    style: TextStyle(color: Colors.white)),
                 ),
               ],
             ),
@@ -347,7 +349,9 @@ class _StorePageState extends State<StorePage> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color(0xFFD3A335),
               ),
-              child: Text("Add to Wishlist"),
+              child: Text(
+                "Add to Wishlist",
+                style: TextStyle(color: Colors.white)),
             ),
           ],
         ),

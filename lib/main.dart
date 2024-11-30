@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
           name: Routes.HOME,
           page: () => WillPopScope(
             onWillPop: () async {
-              settingsController.pauseAudio();
+              settingsController.stopAudio();
               return true;
             },
             child: HomePage(),
@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
           name: Routes.ARTICLE_DETAILS,
           page: () => WillPopScope(
             onWillPop: () async {
-              settingsController.pauseAudio();
+              settingsController.stopAudio();
               return true;
             },
             child: ArticleDetailPage(article: Get.arguments),
@@ -60,7 +60,7 @@ class MyApp extends StatelessWidget {
           name: Routes.ARTICLE_DETAILS_WEBVIEW,
           page: () => WillPopScope(
             onWillPop: () async {
-              settingsController.pauseAudio();
+              settingsController.stopAudio(); // Stop audio when navigating back
               return true;
             },
             child: ArticleDetailWebView(article: Get.arguments),

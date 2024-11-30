@@ -6,106 +6,72 @@ import 'package:flutter/widgets.dart';
 class SettingsController extends GetxController with WidgetsBindingObserver {
   final AudioPlayer _audioPlayer = AudioPlayer();
   var isPlaying = false.obs;
-  var currentTrack = ''.obs;
+  var currentTrack = ''.obs; // Initially no track is selected
+  var isInitialized = false; // Track if audio has been played at least once
 
-  // List of available audio files
   final List<String> audioTracks = ['la-stravaganza.mp3', 'background.mp3', 'ROSÉ_BrunoMars-APT.mp3'];
 
   @override
   void onInit() {
     super.onInit();
-    // Set the initial track
-    currentTrack.value = audioTracks[2];
-    _playAudio();
-
-    // Register the observer
     WidgetsBinding.instance.addObserver(this);
+
+    // Automatically play a default track on app startup
+    currentTrack.value = audioTracks[2]; // Set your desired default track
+    playAudio(); // Start playing the default track
+
+    _audioPlayer.onPlayerStateChanged.listen((PlayerState state) {
+      isPlaying.value = state == PlayerState.playing;
+      if (kDebugMode) print('Player state changed: $state');
+    });
   }
 
   @override
   void onClose() {
-    // Remove the observer
     WidgetsBinding.instance.removeObserver(this);
     _audioPlayer.dispose();
     super.onClose();
   }
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    super.didChangeAppLifecycleState(state);
-
-    if (state == AppLifecycleState.paused || state == AppLifecycleState.inactive) {
-      // Pause audio when the app goes to background or becomes inactive
-      pauseAudio();
-    } else if (state == AppLifecycleState.resumed) {
-      // Resume audio when the app returns to the foreground
-      resumeAudio();
-    }
-  }
-
-  Future<void> _playAudio() async {
+  Future<void> playAudio() async {
+    if (currentTrack.value.isEmpty) return; // No track selected
     try {
+      if (kDebugMode) print('Playing audio: ${currentTrack.value}');
+
       // Stop any currently playing audio
       await _audioPlayer.stop();
 
-      // Make sure the audio path matches your asset location
-      String audioPath = currentTrack.value;
-
-      // Set volume and loop mode
-      await _audioPlayer.setVolume(1.0);
+      // Load and start playback
+      await _audioPlayer.setSource(AssetSource(currentTrack.value));
       await _audioPlayer.setReleaseMode(ReleaseMode.loop);
-
-      // Set source and play
-      await _audioPlayer.setSource(AssetSource(audioPath));
       await _audioPlayer.resume();
 
+      // Mark as initialized once playback starts
+      isInitialized = true;
       isPlaying.value = true;
-
-      if (kDebugMode) {
-        print('Audio started playing: $audioPath');
-      }
     } catch (e) {
-      if (kDebugMode) {
-        print('Error playing audio: $e');
-      }
+      if (kDebugMode) print('Error playing audio: $e');
     }
   }
 
-  Future<void> pauseAudio() async {
+  Future<void> stopAudio() async {
     try {
-      await _audioPlayer.pause();
-      isPlaying.value = false;
-      if (kDebugMode) {
-        print('Audio paused');
+      if (isPlaying.value) {
+        await _audioPlayer.stop();
+        currentTrack.value = ''; // Reset current track to None
+        isPlaying.value = false;
+        if (kDebugMode) print('Audio stopped');
       }
     } catch (e) {
-      if (kDebugMode) {
-        print('Error pausing audio: $e');
-      }
-    }
-  }
-
-  Future<void> resumeAudio() async {
-    try {
-      await _audioPlayer.resume();
-      isPlaying.value = true;
-      if (kDebugMode) {
-        print('Audio resumed');
-      }
-    } catch (e) {
-      if (kDebugMode) {
-        print('Error resuming audio: $e');
-      }
+      if (kDebugMode) print('Error stopping audio: $e');
     }
   }
 
   Future<void> switchTrack(String newTrack) async {
-    if (audioTracks.contains(newTrack) && currentTrack.value != newTrack) {
+    if (audioTracks.contains(newTrack)) {
       currentTrack.value = newTrack;
-      await _playAudio();
-      if (kDebugMode) {
-        print('Switched to track: $newTrack');
-      }
+      await playAudio(); // Automatically play the new track
+      if (kDebugMode) print('Switched to track: $newTrack');
     }
   }
 }

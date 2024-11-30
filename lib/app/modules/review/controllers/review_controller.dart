@@ -6,74 +6,75 @@ import 'package:image_picker/image_picker.dart';
 import 'package:video_player/video_player.dart';
 
 class ReviewController extends GetxController {
-  // Dependencies
-  final ImagePicker _picker = ImagePicker(); // Object untuk ImagePicker
-  final box = GetStorage(); // GetStorage untuk menyimpan data
+  final ImagePicker _picker = ImagePicker();
+  final box = GetStorage();
   final reviewController = TextEditingController();
+  final Map<String, VideoPlayerController> videoPlayers = {};
 
   // Observables
-  var selectedImagePath = ''.obs; // Menyimpan path gambar yang dipilih
-  var isImageLoading = false.obs; // Status loading untuk gambar
-  var selectedVideoPath = ''.obs; // Menyimpan path video yang dipilih
-  var isVideoPlaying = false.obs; // Status untuk video play/pause
-  var mediaList = <Map<String, String>>[].obs; // Daftar media yang dipilih
+  var selectedImagePath = ''.obs;
+  var isImageLoading = false.obs;
+  var selectedVideoPath = ''.obs;
+  var isVideoPlaying = false.obs;
+  var mediaList = <Map<String, String>>[].obs;
 
-  // Video player controller
   VideoPlayerController? videoPlayerController;
 
-  // Lifecycle methods
   @override
   void onInit() {
     super.onInit();
-    _loadStoredData(); // Memuat data yang disimpan
+    _loadStoredData();
   }
 
   @override
   void onClose() {
-    videoPlayerController?.dispose(); // Membersihkan resource video player
+    for (var controller in videoPlayers.values) {
+      controller.dispose();
+    }
+    videoPlayers.clear();
     super.onClose();
   }
 
-  // Methods
-
-  /// Mengambil gambar dari kamera atau galeri
   Future<void> pickImage(ImageSource source) async {
     try {
       isImageLoading.value = true;
       final XFile? pickedFile = await _picker.pickImage(source: source);
       if (pickedFile != null) {
         selectedImagePath.value = pickedFile.path;
-        box.write('imagePath', pickedFile.path); // Menyimpan path gambar
-        mediaList.add({'type': 'image', 'path': pickedFile.path}); // Tambahkan ke mediaList
+        box.write('imagePath', pickedFile.path);
+        mediaList.add({'type': 'image', 'path': pickedFile.path});
       } else {
         print('No image selected.');
         Get.snackbar("Peringatan", "Tidak ada gambar yang dipilih",
-            snackPosition: SnackPosition.BOTTOM);
+            snackPosition: SnackPosition.TOP);
       }
     } catch (e) {
       print('Error picking image: $e');
       Get.snackbar("Error", "Gagal mengambil gambar: $e",
-          snackPosition: SnackPosition.BOTTOM);
+          snackPosition: SnackPosition.TOP);
     } finally {
       isImageLoading.value = false;
     }
   }
 
-  /// Mengambil video dari kamera atau galeri
   Future<void> pickVideo(ImageSource source) async {
+    if (mediaList.where((media) => media['type'] == 'video').length >= 2) {
+    Get.snackbar("Peringatan", "Maksimal 2 video yang dapat dipilih",
+        snackPosition: SnackPosition.TOP);
+    return;
+  }
     try {
       isImageLoading.value = true;
       final XFile? pickedFile = await _picker.pickVideo(source: source);
       if (pickedFile != null) {
         selectedVideoPath.value = pickedFile.path;
-        box.write('videoPath', pickedFile.path); // Menyimpan path video
-        mediaList.add({'type': 'video', 'path': pickedFile.path}); // Tambahkan ke mediaList
-        // Inisialisasi video player
+        box.write('videoPath', pickedFile.path);
+        mediaList.add({'type': 'video', 'path': pickedFile.path});
         _initializeVideoPlayer(pickedFile.path);
       } else {
         print('No video selected.');
         Get.snackbar("Peringatan", "Tidak ada video yang dipilih",
-            snackPosition: SnackPosition.BOTTOM);
+            snackPosition: SnackPosition.TOP);
       }
     } catch (e) {
       print('Error picking video: $e');
@@ -84,7 +85,6 @@ class ReviewController extends GetxController {
     }
   }
 
-  /// Memuat data gambar dan video yang tersimpan
   void _loadStoredData() {
     selectedImagePath.value = box.read('imagePath') ?? '';
     selectedVideoPath.value = box.read('videoPath') ?? '';
@@ -93,35 +93,47 @@ class ReviewController extends GetxController {
     }
   }
 
-  /// Inisialisasi video player dengan file path
   void _initializeVideoPlayer(String filePath) {
+    if (videoPlayers.containsKey(filePath)) {
+      videoPlayerController = videoPlayers[filePath];
+      return;
+    }
+
+  void _initializeVideoPlayerOnDemand(String filePath) {
+    if (videoPlayerController != null) {
+      videoPlayerController?.dispose();
+      videoPlayerController = null;
+    }
     videoPlayerController = VideoPlayerController.file(File(filePath))
       ..initialize().then((_) {
-        videoPlayerController!.play();
-        isVideoPlaying.value = true;
-        update(); // Notify UI
-      }).catchError((e) {
-        print('Error initializing video player: $e');
-        Get.snackbar("Error", "Gagal memutar video: $e",
-            snackPosition: SnackPosition.BOTTOM);
+        update();
       });
   }
+    
+    final controller = VideoPlayerController.file(File(filePath));
+    videoPlayers[filePath] = controller;
 
-  /// Memainkan video
+    controller.initialize().then((_) {
+      update();
+    }).catchError((e) {
+      print('Error initializing video player: $e');
+      Get.snackbar("Error", "Gagal memutar video: $e",
+          snackPosition: SnackPosition.BOTTOM);
+    });
+  }
+
   void play() {
     videoPlayerController?.play();
     isVideoPlaying.value = true;
-    update(); // Notify UI
+    update();
   }
 
-  /// Menjeda video
   void pause() {
     videoPlayerController?.pause();
     isVideoPlaying.value = false;
-    update(); // Notify UI
+    update();
   }
 
-  /// Mengubah status play/pause
   void togglePlayPause() {
     if (videoPlayerController != null) {
       if (videoPlayerController!.value.isPlaying) {
@@ -132,15 +144,19 @@ class ReviewController extends GetxController {
     }
   }
 
-  /// Menghapus media dari daftar
   void removeMedia(int index) {
     if (index >= 0 && index < mediaList.length) {
+      final media = mediaList[index];
+      if (media['type'] == 'video' && videoPlayerController != null && media['path'] == selectedVideoPath.value) {
+        videoPlayerController?.dispose();
+        videoPlayerController = null;
+        selectedVideoPath.value = '';
+      }
       mediaList.removeAt(index);
     }
     update();
   }
 
-  /// Fungsi untuk memproses ulasan
   void submitReview(BuildContext context, TextEditingController reviewController, List<File> list) {
     final reviewText = reviewController.text.trim();
     if (reviewText.isEmpty) {
@@ -152,7 +168,6 @@ class ReviewController extends GetxController {
     print('Ulasan: $reviewText');
     print('Media yang dipilih: ${mediaList.length}');
 
-    // Bersihkan form
     reviewController.clear();
     mediaList.clear();
     selectedImagePath.value = '';
@@ -163,6 +178,6 @@ class ReviewController extends GetxController {
       const SnackBar(content: Text('Ulasan berhasil dikirim!')),
     );
 
-    Navigator.pop(context); // Kembali ke halaman sebelumnya
+    Navigator.pop(context);
   }
 }

@@ -47,14 +47,20 @@ class ReviewView extends StatelessWidget {
                 ElevatedButton.icon(
                   onPressed: () => controller.pickImage(ImageSource.gallery),
                   icon: const Icon(Icons.camera_alt),
-                  label: const Text("Tambah Gambar"),
+                  label: const Text("Tambah Gambar", style: TextStyle(color: Colors.white)),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFFD3A335), // Warna latar belakang sesuai preferensi
+                  ),
                 ),
                 const SizedBox(width: 10),
                 ElevatedButton.icon(
-                  onPressed: () => controller.pickVideo(ImageSource.gallery),
-                  icon: const Icon(Icons.videocam),
-                  label: const Text("Tambah Video"),
+                onPressed: () => controller.pickVideo(ImageSource.gallery),
+                icon: const Icon(Icons.videocam),
+                label: const Text("Tambah Video", style: TextStyle(color: Colors.white)),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFFD3A335), // Warna latar belakang sesuai preferensi
                 ),
+              ),
               ],
             ),
             const SizedBox(height: 10),
@@ -90,26 +96,21 @@ class ReviewView extends StatelessWidget {
                         onTap: () {
                           _showFullScreenVideo(context, media['path']!);
                         },
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
-                              child: AspectRatio(
-                                aspectRatio: 16 / 9,
-                                child: VideoPlayer(
-                                  VideoPlayerController.file(File(media['path']!))
-                                    ..setVolume(0.0)
-                                    ..initialize(),
+                        child: FutureBuilder(
+                          future: controller.videoPlayers[media['path']]?.initialize(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState == ConnectionState.done) {
+                              return ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: AspectRatio(
+                                  aspectRatio: controller.videoPlayers[media['path']]!.value.aspectRatio,
+                                  child: VideoPlayer(controller.videoPlayers[media['path']]!),
                                 ),
-                              ),
-                            ),
-                            const Icon(
-                              Icons.play_circle_outline,
-                              color: Colors.white,
-                              size: 50,
-                            ),
-                          ],
+                              );
+                            } else {
+                              return const Center(child: CircularProgressIndicator());
+                            }
+                          },
                         ),
                       );
                     }
@@ -121,7 +122,7 @@ class ReviewView extends StatelessWidget {
             // Submit review button
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton(
+              child: ElevatedButton.icon(
                 onPressed: () {
                   controller.submitReview(
                     context,
@@ -129,7 +130,11 @@ class ReviewView extends StatelessWidget {
                     controller.mediaList.map((e) => File(e['path']!)).toList(),
                   );
                 },
-                child: const Text("Kirim Ulasan"),
+                icon: const Icon(Icons.send), // Menambahkan ikon untuk tombol Kirim Ulasan
+                label: const Text("Kirim Ulasan", style: TextStyle(color: Colors.white)),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFFD3A335), // Warna latar belakang sesuai preferensi
+                ),
               ),
             ),
           ],
@@ -157,7 +162,6 @@ class ReviewView extends StatelessWidget {
     );
   }
 
-  /// Show full-screen video
   void _showFullScreenVideo(BuildContext context, String videoPath) {
     final videoController = VideoPlayerController.file(File(videoPath));
     videoController.initialize();
@@ -175,12 +179,37 @@ class ReviewView extends StatelessWidget {
                 future: videoController.initialize(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
-                    return Stack(
-                      alignment: Alignment.center,
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         AspectRatio(
                           aspectRatio: videoController.value.aspectRatio,
                           child: VideoPlayer(videoController),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                _formatDuration(videoController.value.position),
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                              Text(
+                                _formatDuration(videoController.value.duration),
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                            ],
+                          ),
+                        ),
+                        VideoProgressIndicator(
+                          videoController,
+                          allowScrubbing: true,
+                          colors: VideoProgressColors(
+                            playedColor: Colors.white,
+                            backgroundColor: Colors.black,
+                            bufferedColor: Colors.grey,
+                          ),
                         ),
                         IconButton(
                           icon: Icon(
@@ -216,5 +245,18 @@ class ReviewView extends StatelessWidget {
     ).then((_) {
       videoController.dispose();
     });
+  }
+
+  /// Format duration into HH:MM:SS or MM:SS
+  String _formatDuration(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, "0");
+    final hours = duration.inHours;
+    final minutes = duration.inMinutes.remainder(60);
+    final seconds = duration.inSeconds.remainder(60);
+    if (hours > 0) {
+      return "${twoDigits(hours)}:${twoDigits(minutes)}:${twoDigits(seconds)}";
+    } else {
+      return "${twoDigits(minutes)}:${twoDigits(seconds)}";
+    }
   }
 }

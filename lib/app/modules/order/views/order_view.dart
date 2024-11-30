@@ -105,10 +105,16 @@ class OrderPage extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Color(0xFFD3A335), // Menambahkan backgroundColor
+            ),
             onPressed: () {
               Get.to(() => ReviewView(item: item));
             },
-            child: const Text("Tulis Ulasan"),
+            child: const Text(
+              "Tulis Ulasan",
+              style: TextStyle(color: Colors.white), // Menambahkan warna teks agar kontras
+            ),
           ),
         ],
       ),

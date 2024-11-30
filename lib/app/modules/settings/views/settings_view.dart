@@ -29,15 +29,16 @@ class SettingsView extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             Obx(() {
+              final track = _controller.currentTrack.value;
               return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
+                  const Text(
                     'Now Playing:',
-                    style: const TextStyle(fontSize: 16),
+                    style: TextStyle(fontSize: 16),
                   ),
                   Text(
-                    _controller.currentTrack.value,
+                    track.isEmpty ? 'None' : track,
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
@@ -48,17 +49,19 @@ class SettingsView extends StatelessWidget {
               );
             }),
             const SizedBox(height: 20),
-            Center(
-              child: Obx(() {
-                return ElevatedButton.icon(
+            Obx(() {
+              final track = _controller.currentTrack.value;
+              if (track.isEmpty) return SizedBox.shrink(); // Hide button if no track
+              return Center(
+                child: ElevatedButton.icon(
                   onPressed: _controller.isPlaying.value
-                      ? _controller.pauseAudio
-                      : _controller.resumeAudio,
+                      ? _controller.stopAudio
+                      : _controller.playAudio,
                   icon: Icon(
-                    _controller.isPlaying.value ? Icons.pause : Icons.play_arrow,
+                    _controller.isPlaying.value ? Icons.stop : Icons.play_arrow,
                   ),
                   label: Text(
-                    _controller.isPlaying.value ? 'Pause' : 'Play',
+                    _controller.isPlaying.value ? 'Stop' : 'Play',
                   ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFFD3A335),
@@ -68,9 +71,9 @@ class SettingsView extends StatelessWidget {
                     ),
                     textStyle: const TextStyle(fontSize: 16),
                   ),
-                );
-              }),
-            ),
+                ),
+              );
+            }),
             const Divider(height: 40, thickness: 1),
             const Text(
               'Switch Tracks',

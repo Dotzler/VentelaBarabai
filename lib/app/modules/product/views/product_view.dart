@@ -125,7 +125,7 @@ class _ProductPageState extends State<ProductPage> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFFD3A335),
                   ),
-                  child: Text("Buy Now"),
+                  child: Text("Buy Now", style: TextStyle(color: Colors.white)),
                 ),
                 ElevatedButton(
                   onPressed: () {
@@ -141,19 +141,25 @@ class _ProductPageState extends State<ProductPage> {
                         "Berhasil",
                         "Produk telah ditambahkan ke keranjang",
                         snackPosition: SnackPosition.TOP,
+                        backgroundColor: Colors.white,
+                        colorText: Colors.black,
+                        duration: Duration(seconds: 2)
                       );
                     } else {
                       Get.snackbar(
                         "Pilih Ukuran",
                         "Silakan pilih ukuran terlebih dahulu",
                         snackPosition: SnackPosition.TOP,
+                        backgroundColor: Colors.white,
+                        colorText: Colors.black,
+                        duration: Duration(seconds: 2)
                       );
                     }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFFD3A335),
                   ),
-                  child: Text("Add to Cart"),
+                  child: Text("Add to Cart", style: TextStyle(color: Colors.white)),
                 ),
               ],
             ),
@@ -234,8 +240,8 @@ class _ProductPageState extends State<ProductPage> {
                   "Berhasil",
                   "Produk telah ditambahkan ke daftar pembelian",
                   snackPosition: SnackPosition.TOP,
-                  backgroundColor: Colors.green.shade300,
-                  colorText: Colors.white,
+                  backgroundColor: Colors.white,
+                  colorText: Colors.black,
                   icon: const Icon(Icons.check_circle, color: Colors.white),
                   duration: const Duration(seconds: 3),
                 );
