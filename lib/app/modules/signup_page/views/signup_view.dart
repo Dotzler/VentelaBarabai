@@ -114,9 +114,9 @@ class _SignUpPageState extends State<SignUpPage> {
                     : Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text("SIGN UP"),
+                          Text("SIGN UP", style: TextStyle(color: Colors.white),),
                           SizedBox(width: 8),
-                          Icon(Icons.arrow_forward),
+                          Icon(Icons.arrow_forward, color: Colors.white,),
                         ],
                       ),
               );

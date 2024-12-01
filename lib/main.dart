@@ -18,9 +18,8 @@ void main() async {
 
   await Firebase.initializeApp();
   await NotificationService().initNotifications();
-  Get.lazyPut<CartController>(() => CartController());
-
   Get.put(HttpController());
+  Get.put(CartController());
 
   runApp(MyApp());
 }

@@ -25,6 +25,9 @@ dependencies:
   audioplayers: ^5.2.1
   get_storage: ^2.1.1
   video_player: ^2.9.2
+  geolocator: ^13.0.2
+  geocoding: ^3.0.0
+  google_maps_flutter: ^2.10.0
 
 dev_dependencies: 
   flutter_lints: ^2.0.0
@@ -41,8 +44,18 @@ flutter:
   - assets/reebok.png
   - assets/SneakerSpace.png
   - assets/Jordan-1-High-OG-Travis-Scott-x-Fragment-1.png
-  - assets/air-force-1-low-x-peaceminusone.jpg
-  - assets/adidas-nmd-r1.jpg
+  - assets/af1peaceminusone.png
+  - assets/ajhigh.png
+  - assets/ajlow.png
+  - assets/nb530.png
+  - assets/nmdr1.png
+  - assets/rbcls.png
+  - assets/SambaOG.png
+  - assets/superstar.png
+  - assets/converse.png
+  - assets/new_balance.png
+  - assets/asics.png
+  - assets/fila.png
   - assets/la-stravaganza.mp3
   - assets/background.mp3
   - assets/ROSÉ_BrunoMars-APT.mp3

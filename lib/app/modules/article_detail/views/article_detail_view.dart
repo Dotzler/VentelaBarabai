@@ -61,7 +61,7 @@ class ArticleDetailPage extends GetView<ArticleDetailController> {
                   ),
                   const Divider(color: Colors.grey),
                   Text(
-                    article.content ?? "-",
+                    article.content,
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),
                   const SizedBox(height: 10),

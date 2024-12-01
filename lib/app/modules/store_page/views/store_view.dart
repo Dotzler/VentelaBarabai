@@ -1,10 +1,13 @@
+import 'package:SneakerSpace/app/modules/brands/views/brands_view.dart';
 import 'package:SneakerSpace/app/modules/cart_page/views/cart_view.dart';
 import 'package:SneakerSpace/app/modules/chat_page/views/chat_view.dart';
 import 'package:SneakerSpace/app/modules/order/views/order_view.dart';
 import 'package:SneakerSpace/app/modules/product/views/product_view.dart';
 import 'package:SneakerSpace/app/modules/profile_page/views/profile_view.dart';
 import 'package:SneakerSpace/app/modules/store_page/controllers/store_controller.dart';
+import 'package:SneakerSpace/app/modules/wishlist_page/controllers/wishlist_controller.dart';
 import 'package:SneakerSpace/app/modules/wishlist_page/views/wishlist_view.dart';
+import 'package:SneakerSpace/app/modules/brand/views/brand_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../http_screen/views/http_view.dart';
@@ -16,54 +19,59 @@ class StorePage extends StatefulWidget {
 
 class _StorePageState extends State<StorePage> {
   final StoreController homeController = Get.put(StoreController());
-  List<WishlistItem> wishlist = [];
-
-  void _addToWishlist(String name, String imagePath) {
-    setState(() {
-      wishlist.add(WishlistItem(name: name, imagePath: imagePath));
-      Get.snackbar(
-        "Wishlist", 
-        "$name telah ditambahkan ke wishlist!",
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.white,
-        colorText: Colors.black,
-        duration: Duration(seconds: 2),
-      );
-    });
-  }
+  final WishlistController wishlistController = Get.put(WishlistController());
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async => false,
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        body: Obx(() {
-          switch (homeController.currentIndex.value) {
-            case 1:
-              return WishlistPage(wishlist: wishlist);
-            case 2:
-              return CartPage();
-            case 3:
-              return OrderPage();
-            default:
-              return _buildHomePage(context);
-          }
-        }),
-        bottomNavigationBar: Obx(() => BottomNavigationBar(
-              currentIndex: homeController.currentIndex.value,
-              onTap: (index) => homeController.changePage(index),
-              selectedItemColor: Color(0xFFD3A335),
-              unselectedItemColor: Colors.grey,
-              backgroundColor: Colors.white,
-              items: [
-                BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-                BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'Wishlist'),
-                BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: 'Cart'),
-                BottomNavigationBarItem(icon: Icon(Icons.shopping_bag), label: 'Order'),
-              ],
-            )),
-      ),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Obx(() {
+        switch (homeController.currentIndex.value) {
+          case 1:
+            return WishlistPage();
+          case 2:
+            return HttpView();
+          case 3:
+            return CartPage();
+          case 4:
+            return OrderPage();
+          default:
+            return _buildHomePage(context);
+        }
+      }),
+      bottomNavigationBar: Obx(() => BottomNavigationBar(
+            currentIndex: homeController.currentIndex.value,
+            onTap: (index) => homeController.changePage(index),
+            selectedItemColor: Color(0xFFD3A335),
+            unselectedItemColor: Colors.grey,
+            backgroundColor: Colors.white,
+            items: [
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.home),
+                  label: 'Home',
+                  backgroundColor: Colors.white),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.favorite),
+                label: 'Wishlist',
+                backgroundColor: Colors.white,
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.article),
+                label: 'Article',
+                backgroundColor: Colors.white,
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.shopping_cart),
+                label: 'Cart',
+                backgroundColor: Colors.white,
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.shopping_bag),
+                label: 'Order',
+                backgroundColor: Colors.white,
+              ),
+            ],
+          )),
     );
   }
 
@@ -98,8 +106,7 @@ class _StorePageState extends State<StorePage> {
         actions: [
           GestureDetector(
             onTap: () {
-              Get.to(ProfilePage(), arguments: {
-                });
+              Get.to(ProfilePage(), arguments: {});
             },
             child: CircleAvatar(
               radius: 16,
@@ -115,15 +122,42 @@ class _StorePageState extends State<StorePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TextField(
-              decoration: InputDecoration(
-                hintText: 'What are you looking for?',
-                prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.2),
+                    spreadRadius: 2,
+                    blurRadius: 8,
+                    offset: Offset(0, 4), // Bayangan ke bawah
+                  ),
+                ],
+              ),
+              child: TextField(
+                onChanged: (value) {
+                  homeController
+                      .searchProduct(value); // Panggil fungsi pencarian
+                },
+                decoration: InputDecoration(
+                  hintText: 'Search Your Favorite Sneakers',
+                  hintStyle: TextStyle(
+                    color: Colors.grey[500],
+                    fontSize: 14,
+                  ),
+                  prefixIcon: Icon(
+                    Icons.search,
+                    color: Colors.grey[700],
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16.0),
+                    borderSide: BorderSide.none,
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
                 ),
-                filled: true,
-                fillColor: Colors.grey[200],
+                style: TextStyle(color: Colors.black, fontSize: 14),
               ),
             ),
             SizedBox(height: 16),
@@ -133,17 +167,6 @@ class _StorePageState extends State<StorePage> {
             SizedBox(height: 24),
             _buildNewArrivalSection(),
             SizedBox(height: 24),
-            Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  Get.to(HttpView());
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFFD3A335),
-                ),
-                child: Text('Visit Article'),
-              ),
-            ),
           ],
         ),
       ),
@@ -187,9 +210,8 @@ class _StorePageState extends State<StorePage> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFFD3A335),
                   ),
-                  child: Text(
-                    "Shop Now",
-                    style: TextStyle(color: Colors.white)),
+                  child:
+                      Text("Shop Now", style: TextStyle(color: Colors.white)),
                 ),
               ],
             ),
@@ -208,6 +230,7 @@ class _StorePageState extends State<StorePage> {
 
   Widget _buildBrandSection() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -215,27 +238,75 @@ class _StorePageState extends State<StorePage> {
             Text(
               "Brand",
               style: TextStyle(
-                fontSize: 18,
+                fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
             ),
             TextButton(
-              onPressed: () {},
-              child: Text("See all"),
+              onPressed: () {
+                Get.to(() => AllBrandsPage()); // Navigasi ke halaman AllBrandsPage
+              },
+              child: Text(
+                "See all",
+                style: TextStyle(fontSize: 16, color: Color(0xFFD3A335)),
+              ),
             ),
           ],
         ),
-        SizedBox(height: 8),
+        SizedBox(height: 16),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            _buildBrandIcon('assets/puma.png'),
-            _buildBrandIcon('assets/nike.png'),
-            _buildBrandIcon('assets/adidas.png'),
-            _buildBrandIcon('assets/reebok.png'),
+            _buildBrandCard('Puma', 'assets/puma.png'),
+            _buildBrandCard('Nike', 'assets/nike.png'),
+            _buildBrandCard('Adidas', 'assets/adidas.png'),
+            _buildBrandCard('Reebok', 'assets/reebok.png'),
           ],
         ),
       ],
+    );
+  }
+
+  Widget _buildBrandCard(String brandName, String assetPath) {
+    return GestureDetector(
+      onTap: () {
+        Get.to(() => BrandProductsPage(brandName: brandName));
+      },
+      child: Column(
+        children: [
+          Container(
+            width: 80,
+            height: 80,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.3),
+                  blurRadius: 10,
+                  offset: Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Image.asset(
+                assetPath,
+                fit: BoxFit.contain,
+              ),
+            ),
+          ),
+          SizedBox(height: 8),
+          Text(
+            brandName,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -263,95 +334,129 @@ class _StorePageState extends State<StorePage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "New Arrival",
+          "Product",
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
         ),
         SizedBox(height: 16),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            _buildProductCard('Nike Air Force 1', 'assets/air-force-1-low-x-peaceminusone.jpg', 6700000, 4.7),
-            _buildProductCard('Adidas NMD', 'assets/adidas-nmd-r1.jpg', 2800000, 4.9),
-          ],
-        ),
+        Obx(() {
+          if (homeController.filteredProducts.isEmpty) {
+            return Center(child: Text('No products found.'));
+          }
+          return Container(
+            width: double.infinity,
+            child: Wrap(
+              alignment: WrapAlignment.spaceAround,
+              spacing: 16,
+              runSpacing: 16,
+              children: homeController.filteredProducts.map((product) {
+                return _buildProductCard(
+                  product.brand,  // Tambahkan brand
+                  product.name,
+                  product.imagePath,
+                  product.price,
+                );
+              }).toList(),
+            ),
+          );
+        }),
       ],
     );
   }
 
-  Widget _buildProductCard(String title, String assetPath, int price, double rating) {
+  Widget _buildProductCard(String brand, String name, String assetPath, int price) {
     return GestureDetector(
       onTap: () {
-        Get.to(ProductPage(title: title, price: price, imagePath: assetPath));
+        Get.to(
+          ProductPage(
+            title: "$brand $name",
+            price: price,
+            imagePath: assetPath,
+          ),
+          transition: Transition.zoom,
+        );
       },
       child: Container(
-        width: 150,
-        height: 300,
+        width: 160,
+        height: 280,
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(12.0),
+          borderRadius: BorderRadius.circular(16.0),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey[200]!,
+              color: Colors.grey.withOpacity(0.3),
               blurRadius: 10,
               spreadRadius: 2,
             ),
           ],
         ),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Image.asset(
-              assetPath,
-              width: 100,
-              height: 100,
-              fit: BoxFit.contain,
+            Center(
+              child: Hero(
+                tag: "$brand $name",
+                child: Image.asset(
+                  assetPath,
+                  width: 120,
+                  height: 120,
+                  fit: BoxFit.cover,
+                ),
+              ),
             ),
             SizedBox(height: 8),
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 4),
-            Text(
-              "\IDR $price",
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey,
-              ),
-            ),
-            SizedBox(height: 4),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.star,
-                  color: Colors.amber,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text(
+                brand, // Nama brand
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
                 ),
-                Text(
-                  "$rating/5",
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text(
+                name, // Nama produk
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey[700],
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text(
+                "Rp $price", // Harga
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey[600],
+                ),
+              ),
+            ),
+            Spacer(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: ElevatedButton(
+                onPressed: () {
+                  wishlistController.addToWishlist(name, assetPath, price);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFFD3A335),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16.0),
                   ),
                 ),
-              ],
-            ),
-            SizedBox(height: 8),
-            ElevatedButton(
-              onPressed: () {
-                _addToWishlist(title, assetPath);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFFD3A335),
+                child: Text(
+                  "Add to Wishlist",
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(color: Colors.white,),
+                ),
               ),
-              child: Text(
-                "Add to Wishlist",
-                style: TextStyle(color: Colors.white)),
             ),
           ],
         ),

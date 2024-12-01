@@ -1,9 +1,10 @@
-import 'package:SneakerSpace/app/modules/order/views/order_view.dart';
 import 'package:get/get.dart';
 
 import '../modules/article_detail/bindings/article_detail_bindings.dart';
 import '../modules/article_detail/views/article_detail_view.dart';
 import '../modules/article_detail/views/article_detail_web_view.dart';
+import '../modules/brands/bindings/brands_binding.dart';
+import '../modules/brands/views/brands_view.dart';
 import '../modules/cart_page/views/cart_view.dart';
 import '../modules/chat_page/views/chat_view.dart';
 import '../modules/home/bindings/home_binding.dart';
@@ -12,6 +13,7 @@ import '../modules/http_screen/bindings/http_binding.dart';
 import '../modules/http_screen/views/http_view.dart';
 import '../modules/login_page/views/login_view.dart';
 import '../modules/microphone/views/microphone_view.dart';
+import '../modules/order/views/order_view.dart';
 import '../modules/profile_page/views/profile_view.dart';
 import '../modules/settings/views/settings_view.dart';
 import '../modules/signup_page/views/signup_view.dart';
@@ -58,9 +60,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.WISHLIST,
-      page: () => WishlistPage(
-        wishlist: const [],
-      ),
+      page: () => WishlistPage(),
     ),
     GetPage(
       name: _Paths.HTTP,
@@ -88,6 +88,11 @@ class AppPages {
     GetPage(
       name: _Paths.ORDER,
       page: () => OrderPage(),
+    ),
+    GetPage(
+      name: _Paths.BRANDS,
+      page: () => AllBrandsPage(),
+      binding: BrandsBinding(),
     ),
   ];
 }

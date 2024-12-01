@@ -16,10 +16,6 @@ class SettingsController extends GetxController with WidgetsBindingObserver {
     super.onInit();
     WidgetsBinding.instance.addObserver(this);
 
-    // Automatically play a default track on app startup
-    currentTrack.value = audioTracks[2]; // Set your desired default track
-    playAudio(); // Start playing the default track
-
     _audioPlayer.onPlayerStateChanged.listen((PlayerState state) {
       isPlaying.value = state == PlayerState.playing;
       if (kDebugMode) print('Player state changed: $state');

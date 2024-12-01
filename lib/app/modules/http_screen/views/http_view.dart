@@ -10,8 +10,18 @@ class HttpView extends GetView<HttpController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
         appBar: AppBar(
-          title: const Text('Article Page'),
+          centerTitle: true,
+          title: Text(
+          "Article Page",
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+
+            color: Color.fromARGB(255, 23, 23, 23),
+          ),
+        ),
           backgroundColor: Color(0xFFD3A335),
         ),
         body: Obx(() {
