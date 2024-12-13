@@ -27,7 +27,7 @@ class ReviewView extends StatelessWidget {
           children: [
             // Review header
             Text(
-              "Ulasan untuk: ${item['title']}",
+              "Ulasan untuk: ${item['productName']}",
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
@@ -46,7 +46,7 @@ class ReviewView extends StatelessWidget {
               children: [
                 ElevatedButton.icon(
                   onPressed: () => controller.pickImage(ImageSource.gallery),
-                  icon: const Icon(Icons.camera_alt),
+                  icon: const Icon(Icons.camera_alt, color: Colors.black,),
                   label: const Text("Tambah Gambar", style: TextStyle(color: Colors.white)),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFFD3A335), // Warna latar belakang sesuai preferensi
@@ -55,7 +55,7 @@ class ReviewView extends StatelessWidget {
                 const SizedBox(width: 10),
                 ElevatedButton.icon(
                 onPressed: () => controller.pickVideo(ImageSource.gallery),
-                icon: const Icon(Icons.videocam),
+                icon: const Icon(Icons.videocam, color: Colors.black,),
                 label: const Text("Tambah Video", style: TextStyle(color: Colors.white)),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFFD3A335), // Warna latar belakang sesuai preferensi
@@ -130,7 +130,7 @@ class ReviewView extends StatelessWidget {
                     controller.mediaList.map((e) => File(e['path']!)).toList(),
                   );
                 },
-                icon: const Icon(Icons.send), // Menambahkan ikon untuk tombol Kirim Ulasan
+                icon: const Icon(Icons.send, color: Colors.black,), // Menambahkan ikon untuk tombol Kirim Ulasan
                 label: const Text("Kirim Ulasan", style: TextStyle(color: Colors.white)),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFFD3A335), // Warna latar belakang sesuai preferensi

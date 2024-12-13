@@ -174,6 +174,10 @@ class _StorePageState extends State<StorePage> {
   }
 
   Widget _buildBanner() {
+    final double originalPrice = 20000000; // Harga asli
+    final double discount = 0.20; // Diskon 20%
+    final double discountedPrice = originalPrice * (1 - discount);
+
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(16.0),
@@ -198,20 +202,35 @@ class _StorePageState extends State<StorePage> {
                 ),
                 SizedBox(height: 8),
                 Text(
-                  "DISCOUNT 20%",
+                  "Rp ${originalPrice.toStringAsFixed(0)}",
                   style: TextStyle(
-                    color: Colors.black,
+                    color: Colors.grey,
                     fontSize: 16,
+                    decoration: TextDecoration.lineThrough,
+                  ),
+                ),
+                Text(
+                  "Rp ${discountedPrice.toStringAsFixed(0)}",
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
                 SizedBox(height: 16),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Get.to(() => ProductPage(
+                          title: "Air Jordan 1 X Travis Scott",
+                          price: discountedPrice.toInt(),
+                          imagePath:
+                              'assets/Jordan-1-High-OG-Travis-Scott-x-Fragment-1.png',
+                        ));
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFFD3A335),
                   ),
-                  child:
-                      Text("Shop Now", style: TextStyle(color: Colors.white)),
+                  child: Text("Shop Now", style: TextStyle(color: Colors.white)),
                 ),
               ],
             ),
@@ -353,7 +372,7 @@ class _StorePageState extends State<StorePage> {
               runSpacing: 16,
               children: homeController.filteredProducts.map((product) {
                 return _buildProductCard(
-                  product.brand,  // Tambahkan brand
+                  product.brand,
                   product.name,
                   product.imagePath,
                   product.price,

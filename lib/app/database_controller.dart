@@ -1,23 +1,24 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DatabaseService {
-  
   final String uid;
-  DatabaseService({ required this.uid });
+  DatabaseService({required this.uid});
 
-  final CollectionReference  _usersCollection = FirebaseFirestore.instance.collection('users');
-  final CollectionReference _ordersCollection = FirebaseFirestore.instance.collection('orders');
+  final CollectionReference _usersCollection =
+      FirebaseFirestore.instance.collection('users');
+  final CollectionReference _ordersCollection =
+      FirebaseFirestore.instance.collection('orders');
 
   Future updateUserData(String name, String username, String email, int age) async {
     return await _usersCollection.doc(uid).set({
       'name': name,
       'username': username,
-      'email' : email,
-      'age' : age,
+      'email': email,
+      'age': age,
     });
   }
 
-  Future addOrder({
+  Future<String> addOrder({
   required String productName,
   required int productPrice,
   required int productSize,
@@ -27,10 +28,10 @@ class DatabaseService {
   required String phoneNumber,
   required String postalCode,
   String? message,
-  required double latitude,
-  required double longitude,
+  required String address, // Accept address as a parameter
 }) async {
-  return await _ordersCollection.add({
+  // Add the order document and get its ID
+  DocumentReference orderRef = await _ordersCollection.add({
     'uid': uid,
     'productName': productName,
     'productPrice': productPrice,
@@ -41,10 +42,18 @@ class DatabaseService {
     'phoneNumber': phoneNumber,
     'postalCode': postalCode,
     'message': message ?? '',
-    'latitude': latitude,
-    'longitude': longitude,
+    'address': address, // Store address in Firestore
     'orderDate': FieldValue.serverTimestamp(),
   });
+
+  String orderId = orderRef.id;
+
+  // Update the user's document to include this order ID
+  await _usersCollection.doc(uid).update({
+    'orderIds': FieldValue.arrayUnion([orderId]), // Add orderId to an array
+  });
+
+  return orderId;
 }
 
 }

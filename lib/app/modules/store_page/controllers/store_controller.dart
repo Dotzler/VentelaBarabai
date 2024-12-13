@@ -13,9 +13,14 @@ class StoreController extends GetxController {
     if (keyword.isEmpty) {
       filteredProducts.assignAll(allProducts);
     } else {
+      List<String> keywords = keyword.toLowerCase().split(' ');
       filteredProducts.assignAll(
-        allProducts.where((product) =>
-            product.name.toLowerCase().contains(keyword.toLowerCase())),
+        allProducts.where((product) {
+          // Cek apakah semua kata kunci ada di brand atau name
+          return keywords.every((kw) =>
+              product.name.toLowerCase().contains(kw) ||
+              product.brand.toLowerCase().contains(kw));
+        }),
       );
     }
   }

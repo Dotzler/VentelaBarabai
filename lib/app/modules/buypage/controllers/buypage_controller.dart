@@ -39,10 +39,11 @@ class BuyPageController extends GetxController {
       return;
     }
 
-    if (userPosition.value == null) {
+    if (userPosition.value == null ||
+        address.value == "Address not available") {
       Get.snackbar(
         "Error",
-        "Location not available. Please allow location access.",
+        "Location and address not available. Please allow location access.",
         snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.white,
         colorText: Colors.black,
@@ -55,23 +56,23 @@ class BuyPageController extends GetxController {
 
       DatabaseService dbService = DatabaseService(uid: uid);
 
-      await dbService.addOrder(
+      String orderId = await dbService.addOrder(
         productName: title,
         productPrice: price,
         productSize: size,
         shippingType: shippingType,
         paymentMethod: paymentMethod.value,
-        paymentNumber: paymentNumber.value.isNotEmpty ? paymentNumber.value : null,
+        paymentNumber:
+            paymentNumber.value.isNotEmpty ? paymentNumber.value : null,
         phoneNumber: phoneNumber,
         postalCode: postalCode,
         message: message.isNotEmpty ? message : null,
-        latitude: userPosition.value!.latitude,
-        longitude: userPosition.value!.longitude,
+        address: address.value, // Pass the resolved address
       );
 
       Get.snackbar(
         "Success",
-        "Order placed successfully!",
+        "Order placed successfully! Order ID: $orderId",
         snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.green,
         colorText: Colors.white,

@@ -1,3 +1,4 @@
+import 'package:SneakerSpace/app/modules/review/views/review_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/order_controller.dart';
@@ -29,7 +30,7 @@ class OrderPage extends StatelessWidget {
         title: const Text(
           "My Orders",
           style: TextStyle(
-              fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
+              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
         ),
       ),
       body: Obx(() => orderController.purchasedItems.isEmpty
@@ -61,77 +62,100 @@ class OrderPage extends StatelessWidget {
   }
 
   Widget _buildOrderItemCard(Map<String, dynamic> item, BuildContext context) {
-    return Card(
-      elevation: 4,
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Product Title and Price
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Text(
-                    item['productName'],
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                Text(
-                  'Rp ${item['productPrice']}',
+  return Card(
+    elevation: 4,
+    color: Colors.white,
+    margin: const EdgeInsets.symmetric(vertical: 8),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(12),
+    ),
+    child: Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Product Title and Price
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Text(
+                  item['productName'],
                   style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFFD3A335),
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
                   ),
-                ),
-              ],
-            ),
-            const Divider(height: 20, color: Colors.grey),
-
-            // Order Details
-            _buildDetailRow(Icons.rule, "Size", item['productSize'].toString()),
-            _buildDetailRow(
-                Icons.payment, "Payment Method", item['paymentMethod']),
-            _buildDetailRow(Icons.location_on, "Delivered to",
-                "Lat: ${item['latitude']}, Lon: ${item['longitude']}"),
-            _buildDetailRow(Icons.phone, "Phone Number", item['phoneNumber']),
-
-            // Optional Message
-            if (item['message'] != null && item['message'].isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Row(
-                  children: [
-                    Icon(Icons.message, color: Colors.grey[600], size: 18),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        item['message'],
-                        style: TextStyle(
-                          color: Colors.grey[700],
-                          fontStyle: FontStyle.italic,
-                        ),
-                      ),
-                    ),
-                  ],
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
-          ],
-        ),
+              Text(
+                'Rp ${item['productPrice']}',
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFFD3A335),
+                ),
+              ),
+            ],
+          ),
+          const Divider(height: 20, color: Colors.grey),
+
+          // Order Details
+          _buildDetailRow(Icons.rule, "Size", item['productSize'].toString()),
+          _buildDetailRow(Icons.payment, "Payment Method", item['paymentMethod']),
+          _buildDetailRow(Icons.location_on, "Delivered to", item['address'] ?? "Address not available"),
+          _buildDetailRow(Icons.phone, "Phone Number", item['phoneNumber']),
+
+          // Optional Message
+          if (item['message'] != null && item['message'].isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Row(
+                children: [
+                  Icon(Icons.message, color: Colors.grey[600], size: 18),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      item['message'],
+                      style: TextStyle(
+                        color: Colors.grey[700],
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          // Tambahkan tombol di bawah komentar atau pesan
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: ElevatedButton(
+                onPressed: () {
+                  Get.to(() => ReviewView(item: item));
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFD3A335), // Warna tombol
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: const Text(
+                  'Tambah Ulasan',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
-    );
-  }
+    ),
+  );
+}
 
   Widget _buildDetailRow(IconData icon, String label, String value) {
     return Padding(

@@ -53,7 +53,7 @@ class CartPage extends StatelessWidget {
                       ),
                       child: const Text(
                         'CHECK OUT',
-                        style: TextStyle(fontSize: 16),
+                        style: TextStyle(fontSize: 16, color: Colors.white),
                       ),
                     ),
                   ],
