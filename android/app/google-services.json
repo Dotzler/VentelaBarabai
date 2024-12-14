@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "6711667658",
+    "project_id": "ventela-barabai",
+    "storage_bucket": "ventela-barabai.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:6711667658:android:dda0c4ad0674ff554dfd33",
+        "android_client_info": {
+          "package_name": "com.example.barabai"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-rkTVUFzeynwa2Wk-m-hxLWu44D1Qr2U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
