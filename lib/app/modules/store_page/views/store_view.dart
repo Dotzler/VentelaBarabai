@@ -181,30 +181,33 @@ class _StorePageState extends State<StorePage> {
         'title': 'Air Jordan 1 X Travis Scott',
         'originalPrice': 20000000,
         'discount': 0.20,
-        'imagePath': 'assets/Jordan-1-High-OG-Travis-Scott-x-Fragment-1.png'
+        'imagePath': 'assets/Jordan-1-High-OG-Travis-Scott-x-Fragment-1.png',
+        'description': 'Limited Edition Collection',
       },
       {
         'title': 'Nike Air Max 97',
         'originalPrice': 15000000,
         'discount': 0.15,
-        'imagePath': 'assets/Nike-Air-Max-97.png'
+        'imagePath': 'assets/Nike-Air-Max-97.png',
+        'description': 'Classic Comfort Design',
       },
       {
         'title': 'Adidas Yeezy Boost 350',
         'originalPrice': 1800000,
         'discount': 0.25,
-        'imagePath': 'assets/Yeezy-Slides.png'
+        'imagePath': 'assets/Yeezy-Slides.png',
+        'description': 'Modern Street Style',
       },
     ];
 
     return CarouselSlider(
       options: CarouselOptions(
-        height: 280.0, // Sedikit ditinggikan untuk konten yang lebih nyaman
+        height: 320.0,
         autoPlay: true,
         enlargeCenterPage: true,
-        viewportFraction: 0.92, // Diperbesar sedikit untuk tampilan yang lebih baik
-        aspectRatio: 16 / 9,
+        viewportFraction: 1,
         autoPlayInterval: Duration(seconds: 5),
+        autoPlayCurve: Curves.easeInOutCubic,
       ),
       items: bannerItems.map((item) {
         final double discountedPrice = item['originalPrice'] * (1 - item['discount']);
@@ -214,82 +217,140 @@ class _StorePageState extends State<StorePage> {
           builder: (BuildContext context) {
             return Container(
               width: MediaQuery.of(context).size.width,
-              margin: EdgeInsets.symmetric(horizontal: 5.0),
+              margin: EdgeInsets.symmetric(horizontal: 8.0),
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16.0),
+                borderRadius: BorderRadius.circular(20.0),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    spreadRadius: 1,
-                    blurRadius: 10,
-                    offset: Offset(0, 3),
+                    color: Colors.black.withOpacity(0.2),
+                    spreadRadius: 2,
+                    blurRadius: 15,
+                    offset: Offset(0, 5),
                   ),
                 ],
               ),
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  return Row(
-                    children: [
-                      Expanded(
-                        flex: 3,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              // Badge diskon
-                              Container(
-                                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                decoration: BoxDecoration(
-                                  color: Colors.red.shade50,
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Text(
-                                  '$discountPercentage% OFF',
-                                  style: TextStyle(
-                                    color: Colors.red,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 12,
-                                  ),
-                                ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20.0),
+                child: Stack(
+                  children: [
+                    // Background Image
+                    Positioned.fill(
+                      child: Image.asset(
+                        item['imagePath'],
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    // Gradient Overlay
+                    Positioned.fill(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Colors.transparent,
+                              Colors.black.withOpacity(0.1),
+                              Colors.black.withOpacity(0.5),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    // Content Overlay
+                    Positioned(
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      child: Container(
+                        padding: EdgeInsets.all(24.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Discount Badge
+                            Container(
+                              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                              decoration: BoxDecoration(
+                                color: Colors.red,
+                                borderRadius: BorderRadius.circular(20),
                               ),
-                              SizedBox(height: 12),
-                              // Judul dengan ellipsis
-                              Text(
-                                item['title'],
+                              child: Text(
+                                '$discountPercentage% OFF',
                                 style: TextStyle(
-                                  color: Colors.black87,
-                                  fontSize: 18,
+                                  color: Colors.white,
                                   fontWeight: FontWeight.bold,
-                                ),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              SizedBox(height: 8),
-                              // Harga
-                              Text(
-                                "Rp ${NumberFormat('#,###').format(item['originalPrice'])}",
-                                style: TextStyle(
-                                  color: Colors.grey,
                                   fontSize: 14,
-                                  decoration: TextDecoration.lineThrough,
                                 ),
                               ),
-                              Text(
-                                "Rp ${NumberFormat('#,###').format(discountedPrice)}",
-                                style: TextStyle(
-                                  color: Colors.red,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                            ),
+                            SizedBox(height: 12),
+                            // Title
+                            Text(
+                              item['title'],
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 28,
+                                fontWeight: FontWeight.bold,
+                                shadows: [
+                                  Shadow(
+                                    blurRadius: 10.0,
+                                    color: Colors.black.withOpacity(0.3),
+                                    offset: Offset(0, 2),
+                                  ),
+                                ],
                               ),
-                              SizedBox(height: 16),
-                              // Tombol dengan efek hover
-                              MouseRegion(
-                                cursor: SystemMouseCursors.click,
-                                child: ElevatedButton(
+                            ),
+                            SizedBox(height: 8),
+                            // Description
+                            Text(
+                              item['description'],
+                              style: TextStyle(
+                                color: Colors.white.withOpacity(0.9),
+                                fontSize: 16,
+                                shadows: [
+                                  Shadow(
+                                    blurRadius: 8.0,
+                                    color: Colors.black.withOpacity(0.3),
+                                    offset: Offset(0, 1),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: 12),
+                            // Price Row
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Rp ${NumberFormat('#,###').format(item['originalPrice'])}",
+                                      style: TextStyle(
+                                        color: Colors.white.withOpacity(0.7),
+                                        fontSize: 16,
+                                        decoration: TextDecoration.lineThrough,
+                                      ),
+                                    ),
+                                    Text(
+                                      "Rp ${NumberFormat('#,###').format(discountedPrice)}",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.bold,
+                                        shadows: [
+                                          Shadow(
+                                            blurRadius: 10.0,
+                                            color: Colors.black.withOpacity(0.3),
+                                            offset: Offset(0, 2),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Spacer(),
+                                // Shop Now Button
+                                ElevatedButton(
                                   onPressed: () {
                                     Get.to(() => ProductPage(
                                       title: item['title'],
@@ -299,51 +360,34 @@ class _StorePageState extends State<StorePage> {
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Color(0xFFD3A335),
-                                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                                     shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
+                                      borderRadius: BorderRadius.circular(12),
                                     ),
-                                    elevation: 2,
+                                    elevation: 4,
                                   ),
-                                  child: Text(
-                                    "Shop Now",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                    ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        "Shop Now",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
-                      Expanded(
-                        flex: 2,
-                        child: Container(
-                          height: double.infinity,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(16.0),
-                              bottomRight: Radius.circular(16.0),
-                            ),
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(16.0),
-                              bottomRight: Radius.circular(16.0),
-                            ),
-                            child: Image.asset(
-                              item['imagePath'],
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
-                },
+                    ),
+                  ],
+                ),
               ),
             );
           },
@@ -434,25 +478,6 @@ class _StorePageState extends State<StorePage> {
     );
   }
 
-  Widget _buildBrandIcon(String assetPath) {
-    return Container(
-      width: 60,
-      height: 60,
-      decoration: BoxDecoration(
-        color: Colors.grey[200],
-        shape: BoxShape.circle,
-      ),
-      child: Center(
-        child: Image.asset(
-          assetPath,
-          width: 40,
-          height: 40,
-          fit: BoxFit.contain,
-        ),
-      ),
-    );
-  }
-
   Widget _buildNewArrivalSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -504,7 +529,7 @@ class _StorePageState extends State<StorePage> {
       },
       child: Container(
         width: 180,
-        height: 380,
+        height: 330,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20.0),
@@ -638,38 +663,6 @@ class _StorePageState extends State<StorePage> {
                       ),
                     ),
                     Spacer(),
-                    // Add to Cart Button
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          // Add to cart functionality
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFFD3A335),
-                          foregroundColor: Colors.white,
-                          elevation: 0,
-                          padding: EdgeInsets.symmetric(vertical: 12),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12.0),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.shopping_cart_outlined, size: 18),
-                            SizedBox(width: 8),
-                            Text(
-                              "Add to Cart",
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               ),

@@ -9,8 +9,11 @@ class ProductPage extends StatefulWidget {
   final int price;
   final String imagePath;
 
-  ProductPage(
-      {required this.title, required this.price, required this.imagePath});
+  ProductPage({
+    required this.title,
+    required this.price,
+    required this.imagePath,
+  });
 
   @override
   _ProductPageState createState() => _ProductPageState();
@@ -20,151 +23,313 @@ class _ProductPageState extends State<ProductPage> {
   int? selectedSize;
   final CartController cartController = Get.put(CartController());
   final OrderController bagController = Get.put(OrderController());
+  final ScrollController _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.grey[100],
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
+        title: Text("Product Detail"),
         backgroundColor: Color(0xFFD3A335),
-        title: Text(
-          "Product Detail",
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: Container(
+            padding: EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Color(0xFFD3A335).withOpacity(0.9),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(Icons.arrow_back, color: Colors.black),
+          ),
           onPressed: () => Get.back(),
         ),
+        actions: [
+          IconButton(
+            icon: Container(
+              padding: EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Color(0xFFD3A335).withOpacity(0.9),
+                shape: BoxShape.circle,
+              ),
+            ),
+            onPressed: () {},
+          ),
+        ],
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Image.asset(
-                widget.imagePath,
-                width: 200,
-                height: 200,
-                fit: BoxFit.cover,
-              ),
-            ),
-            SizedBox(height: 16),
-            Center(
-              child: Text(
-                widget.title,
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-            ),
-            SizedBox(height: 8),
-            Center(
-              child: Text(
-                "Rp ${widget.price}",
-                style: TextStyle(fontSize: 20, color: Colors.grey[800]),
-              ),
-            ),
-            SizedBox(height: 16),
-            Text(
-              "Size :",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 8),
-            Wrap(
-              spacing: 8.0,
-              children: List.generate(8, (index) {
-                int size = 37 + index;
-                return ChoiceChip(
-                  label: Text(size.toString()),
-                  selected: selectedSize == size,
-                  backgroundColor: Colors.white,
-                  selectedColor: Colors.black,
-                  labelStyle: TextStyle(
-                    color: selectedSize == size ? Colors.white : Colors.black,
-                  ),
-                  onSelected: (bool selected) {
-                    setState(() {
-                      selectedSize = selected ? size : null;
-                    });
-                  },
-                );
-              }),
-            ),
-            SizedBox(height: 16),
-            Text(
-              "Deskripsi Produk",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            Divider(color: Colors.black),
-            SizedBox(height: 16),
-            Text(
-              "Ini adalah deskripsi dari produk ${widget.title}.",
-              style: TextStyle(fontSize: 16),
-            ),
-            SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      body: CustomScrollView(
+        controller: _scrollController,
+        slivers: [
+          SliverToBoxAdapter(
+            child: Stack(
               children: [
-                ElevatedButton(
-                  onPressed: () {
-                    if (selectedSize != null) {
-                      Get.to(() => BuyPageView(
-                            title: widget.title,
-                            price: widget.price,
-                            imagePath: widget.imagePath,
-                            size: selectedSize!,
-                          ));
-                    } else {
-                      Get.snackbar(
-                        "Pilih Ukuran",
-                        "Silakan pilih ukuran terlebih dahulu",
-                        snackPosition: SnackPosition.TOP,
-                        backgroundColor: Colors.white,
-                        colorText: Colors.black,
-                      );
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFFD3A335),
+                // Hero Image with Gradient Overlay
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.5,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.vertical(
+                      bottom: Radius.circular(30),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.3),
+                        spreadRadius: 2,
+                        blurRadius: 10,
+                        offset: Offset(0, 3),
+                      ),
+                    ],
                   ),
-                  child: Text("Buy Now", style: TextStyle(color: Colors.white)),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    if (selectedSize != null) {
-                      cartController.addToCart({
-                        'title': widget.title,
-                        'price': widget.price,
-                        'size': selectedSize,
-                        'image': widget.imagePath,
-                        'quantity': 1,
-                      });
-                      Get.snackbar(
-                          "Berhasil", "Produk telah ditambahkan ke keranjang",
-                          snackPosition: SnackPosition.TOP,
-                          backgroundColor: Colors.white,
-                          colorText: Colors.black,
-                          duration: Duration(seconds: 2));
-                    } else {
-                      Get.snackbar("Pilih Ukuran",
-                          "Silakan pilih ukuran terlebih dahulu",
-                          snackPosition: SnackPosition.TOP,
-                          backgroundColor: Colors.white,
-                          colorText: Colors.black,
-                          duration: Duration(seconds: 2));
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFFD3A335),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.vertical(
+                      bottom: Radius.circular(30),
+                    ),
+                    child: Hero(
+                      tag: widget.imagePath,
+                      child: Image.asset(
+                        widget.imagePath,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
-                  child: Text("Add to Cart",
-                      style: TextStyle(color: Colors.white)),
                 ),
               ],
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Transform.translate(
+              offset: Offset(0, -30),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                //title to image padding
+                                SizedBox(height: 25,),
+                                Text(
+                                  widget.title,
+                                  style: TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                                SizedBox(height: 8),
+                                Text(
+                                  "Rp ${widget.price.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFFD3A335),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 20),
+                      Text(
+                        "Select Size",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      SizedBox(height: 15),
+                      Container(
+                        height: 60,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: 8,
+                          itemBuilder: (context, index) {
+                            int size = 37 + index;
+                            return Padding(
+                              padding: EdgeInsets.only(right: 10),
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    selectedSize = size;
+                                  });
+                                },
+                                child: AnimatedContainer(
+                                  duration: Duration(milliseconds: 200),
+                                  width: 60,
+                                  decoration: BoxDecoration(
+                                    color: selectedSize == size
+                                        ? Color(0xFFD3A335)
+                                        : Colors.white,
+                                    borderRadius: BorderRadius.circular(15),
+                                    border: Border.all(
+                                      color: selectedSize == size
+                                          ? Color(0xFFD3A335)
+                                          : Colors.grey[300]!,
+                                    ),
+                                    boxShadow: selectedSize == size
+                                        ? [
+                                            BoxShadow(
+                                              color:
+                                                  Color(0xFFD3A335).withOpacity(0.3),
+                                              blurRadius: 8,
+                                              offset: Offset(0, 3),
+                                            ),
+                                          ]
+                                        : [],
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      size.toString(),
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: selectedSize == size
+                                            ? Colors.white
+                                            : Colors.black87,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                      Text(
+                        "Description",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        "Experience premium comfort and style with ${widget.title}. These sneakers combine innovative design with exceptional craftsmanship, delivering both performance and fashion-forward aesthetics.",
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey[600],
+                          height: 1.5,
+                        ),
+                      ),
+                      SizedBox(height: 30),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+      bottomNavigationBar: Container(
+        padding: EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.3),
+              spreadRadius: 2,
+              blurRadius: 10,
+              offset: Offset(0, -3),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: ElevatedButton(
+                onPressed: () {
+                  if (selectedSize != null) {
+                    cartController.addToCart({
+                      'title': widget.title,
+                      'price': widget.price,
+                      'size': selectedSize,
+                      'image': widget.imagePath,
+                      'quantity': 1,
+                    });
+                  } else {
+                    _showSizeWarning();
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: Color(0xFFD3A335),
+                  padding: EdgeInsets.symmetric(vertical: 15),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    side: BorderSide(color: Color(0xFFD3A335)),
+                  ),
+                ),
+                child: Text(
+                  "Add to Cart",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(width: 15),
+            Expanded(
+              child: ElevatedButton(
+                onPressed: () {
+                  if (selectedSize != null) {
+                    Get.to(() => BuyPageView(
+                          title: widget.title,
+                          price: widget.price,
+                          imagePath: widget.imagePath,
+                          size: selectedSize!,
+                        ));
+                  } else {
+                    _showSizeWarning();
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFFD3A335),
+                  padding: EdgeInsets.symmetric(vertical: 15),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  elevation: 2,
+                ),
+                child: Text(
+                  "Buy Now",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  void _showSizeWarning() {
+    Get.snackbar(
+      "Select Size",
+      "Please select a size first",
+      snackPosition: SnackPosition.TOP,
+      backgroundColor: Colors.red,
+      colorText: Colors.white,
+      duration: Duration(seconds: 2),
     );
   }
 }

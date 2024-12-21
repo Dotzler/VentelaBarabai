@@ -12,21 +12,14 @@ class ProfilePage extends StatelessWidget {
   final StorageController storageController = Get.put(StorageController());
   
   ProfilePage() {
-    // Fetch user profile data when ProfilePage loads
     _authController.fetchUserProfile();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Color(0xFFD3A335),
-        elevation: 0,
-        title: Text('Profile'),
-      ),
+      backgroundColor: Colors.grey[100],
       body: Obx(() {
-        // Show loading indicator for the whole page if profile is loading
         if (profileController.isLoading.value) {
           return Center(
             child: CircularProgressIndicator(
@@ -35,118 +28,104 @@ class ProfilePage extends StatelessWidget {
           );
         }
         
-        return Column(
-          children: [
-            // Profile picture and info section
-            Container(
-              color: Color(0xFFD3A335),
-              padding: EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  GestureDetector(
-                    onTap: () => _showFullImage(context),
-                    child: Container(
-                      height: 100,
-                      width: double.infinity,
-                      child: Center(
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            // Profile Image
-                            _authController.userProfile['profileImageUrl'] != null
-                                ? CircleAvatar(
-                                    radius: 50,
-                                    backgroundImage: NetworkImage(
-                                      _authController.userProfile['profileImageUrl'],
-                                    ),
-                                  )
-                                : profileController.selectedImagePath.value.isEmpty
-                                    ? CircleAvatar(
-                                        radius: 50,
-                                        backgroundColor: Colors.black,
-                                        child: Icon(Icons.person, size: 50, color: Colors.white),
-                                      )
-                                    : CircleAvatar(
-                                        radius: 50,
-                                        backgroundImage: FileImage(File(profileController.selectedImagePath.value)),
-                                      ),
-                            
-                            // Loading Overlay
-                            if (profileController.isLoading.value)
-                              Container(
-                                width: 100,
-                                height: 100,
-                                decoration: BoxDecoration(
-                                  color: Colors.black.withOpacity(0.5),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Center(
+        return CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              expandedHeight: 280.0,
+              floating: false,
+              pinned: true,
+              backgroundColor: Color(0xFFD3A335),
+              flexibleSpace: FlexibleSpaceBar(
+                background: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Color(0xFFD3A335),
+                        Color(0xFFD3A335).withOpacity(0.8),
+                      ],
+                    ),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(height: 60),
+                      GestureDetector(
+                        onTap: () => _showFullImage(context),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Colors.white,
+                              width: 4,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.2),
+                                spreadRadius: 2,
+                                blurRadius: 8,
+                                offset: Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              _buildProfileImage(),
+                              if (profileController.isLoading.value)
+                                Container(
+                                  width: 100,
+                                  height: 100,
+                                  decoration: BoxDecoration(
+                                    color: Colors.black.withOpacity(0.5),
+                                    shape: BoxShape.circle,
+                                  ),
                                   child: CircularProgressIndicator(
                                     color: Colors.white,
                                   ),
                                 ),
-                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 16),
+                      Text(
+                        _authController.userProfile['username'] ?? '',
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          shadows: [
+                            Shadow(
+                              color: Colors.black26,
+                              offset: Offset(0, 2),
+                              blurRadius: 4,
+                            ),
                           ],
                         ),
                       ),
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  Center(
-                    child: Text(
-                      _authController.userProfile['username'] ?? '',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                      SizedBox(height: 8),
+                      Text(
+                        _authController.userProfile['name'] ?? '',
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.white.withOpacity(0.9),
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-                  SizedBox(height: 5),
-                  Center(
-                    child: Text(
-                      _authController.userProfile['name'] ?? '',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                ],
+                ),
               ),
             ),
-            SizedBox(height: 24),
-
-            // My Account section
-            ListTile(
-              leading: Icon(Icons.person),
-              title: Text('My Account'),
-              subtitle: Text('Edit your information'),
-              trailing: Icon(Icons.arrow_forward),
-              onTap: () {
-                Get.to(() => EditProfileView());  // Navigate to EditProfileView
-              },
-            ),
-
-            // Settings button
-            ListTile(
-              leading: Icon(Icons.music_note),
-              title: Text('Music Settings'),
-              subtitle: Text('Change Your Music'),
-              trailing: Icon(Icons.arrow_forward),
-              onTap: () {
-                profileController.navigateToSettings();
-              },
-            ),
-
-            ListTile(
-              leading: Icon(Icons.logout),
-              title: Text('Logout'),
-              onTap: () async {
-                await _authController.logout();
-              },
+            SliverToBoxAdapter(
+              child: Column(
+                children: [
+                  SizedBox(height: 20),
+                  _buildMenuSection(),
+                ],
+              ),
             ),
           ],
         );
@@ -154,17 +133,195 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  // Function to show the full profile image in a dialog
+  Widget _buildProfileImage() {
+    if (_authController.userProfile['profileImageUrl'] != null) {
+      return CircleAvatar(
+        radius: 50,
+        backgroundImage: NetworkImage(
+          _authController.userProfile['profileImageUrl'],
+        ),
+      );
+    } else if (profileController.selectedImagePath.value.isEmpty) {
+      return CircleAvatar(
+        radius: 50,
+        backgroundColor: Colors.black,
+        child: Icon(
+          Icons.person,
+          size: 50,
+          color: Colors.white,
+        ),
+      );
+    } else {
+      return CircleAvatar(
+        radius: 50,
+        backgroundImage: FileImage(
+          File(profileController.selectedImagePath.value),
+        ),
+      );
+    }
+  }
+
+  Widget _buildMenuSection() {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            spreadRadius: 1,
+            offset: Offset(0, 1),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          _buildMenuItem(
+            icon: Icons.person,
+            title: 'My Account',
+            subtitle: 'Edit your information',
+            iconColor: Color(0xFFD3A335),
+            onTap: () => Get.to(() => EditProfileView()),
+          ),
+          _buildDivider(),
+          _buildMenuItem(
+            icon: Icons.music_note,
+            title: 'Music Settings',
+            subtitle: 'Change Your Music',
+            iconColor: Colors.blue,
+            onTap: () => profileController.navigateToSettings(),
+          ),
+          _buildDivider(),
+          SizedBox(height: 270,),
+          _buildMenuItem(
+            icon: Icons.logout,
+            title: 'Logout',
+            subtitle: 'Sign out from your account',
+            iconColor: Colors.red,
+            onTap: () async => await _authController.logout(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMenuItem({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required Color iconColor,
+    required VoidCallback onTap,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          child: Row(
+            children: [
+              Container(
+                padding: EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: iconColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  icon,
+                  color: iconColor,
+                  size: 24,
+                ),
+              ),
+              SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      subtitle,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(
+                Icons.arrow_forward_ios,
+                color: Colors.grey[400],
+                size: 16,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDivider() {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 20),
+      height: 1,
+      color: Colors.grey[200],
+    );
+  }
+
   void _showFullImage(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return Dialog(
-          child: _authController.userProfile['profileImageUrl'] != null
-              ? Image.network(_authController.userProfile['profileImageUrl'])
-              : profileController.selectedImagePath.value.isEmpty
-                  ? Icon(Icons.person, size: 100)
-                  : Image.file(File(profileController.selectedImagePath.value)),
+          backgroundColor: Colors.transparent,
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              color: Colors.white,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                  child: _authController.userProfile['profileImageUrl'] != null
+                      ? Image.network(_authController.userProfile['profileImageUrl'])
+                      : profileController.selectedImagePath.value.isEmpty
+                          ? Container(
+                              height: 300,
+                              color: Colors.grey[200],
+                              child: Icon(Icons.person, size: 100, color: Colors.grey[400]),
+                            )
+                          : Image.file(File(profileController.selectedImagePath.value)),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8),
+                    child: Text(
+                      'Close',
+                      style: TextStyle(
+                        color: Color(0xFFD3A335),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         );
       },
     );

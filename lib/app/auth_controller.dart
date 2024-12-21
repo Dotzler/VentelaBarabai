@@ -1,4 +1,3 @@
-import 'package:SneakerSpace/app/modules/home/views/home_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -15,6 +14,14 @@ class AuthController extends GetxController {
   RxBool isLoading = false.obs;
   RxMap<String, dynamic> userProfile = <String, dynamic>{}.obs;
 
+  // State untuk visibilitas password
+  RxBool isPasswordHidden = true.obs;
+
+  // Toggle password visibility
+  void togglePasswordVisibility() {
+    isPasswordHidden.value = !isPasswordHidden.value;
+  }
+
   // Check login status
   Future<void> checkLoginStatus() async {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -25,7 +32,7 @@ class AuthController extends GetxController {
         await fetchUserProfile();
         Get.offAll(() => StorePage());
       } else {
-        Get.offAll(() => HomePage());
+        Get.offAll(() => LoginPage());
       }
     });
   }
@@ -91,6 +98,40 @@ Future<void> loginUser(String email, String password) async {
     isLoading.value = false;
   }
 }
+
+// Reset Password
+  Future<void> sendPasswordResetEmail(String email) async {
+    if (email.isEmpty) {
+      Get.snackbar(
+        'Error',
+        'Email tidak boleh kosong',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
+    try {
+      isLoading.value = true;
+      await _auth.sendPasswordResetEmail(email: email);
+      Get.snackbar(
+        'Success',
+        'Link reset password telah dikirim ke email Anda',
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
+      Get.back(); // Kembali ke halaman login setelah berhasil
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'Gagal mengirim email reset password. Silakan coba lagi.',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    } finally {
+      isLoading.value = false;
+    }
+  }
 
   // Register function
   Future<void> registerUser(String email, String password) async {

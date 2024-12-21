@@ -14,7 +14,7 @@ import 'package:SneakerSpace/app/auth_controller.dart';
 import 'package:get_storage/get_storage.dart';
 import 'app/routes/app_pages.dart';
 
-Future <void> main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
   await GetStorage.init();
@@ -23,14 +23,9 @@ Future <void> main() async {
 
   Get.put(HttpController());
   Get.put(CartController());
-  AuthController authController = Get.put(AuthController(), permanent: true);
+  Get.put(AuthController(), permanent: true);
   
-  await authController.checkLoginStatus();
-
-  runApp(
-    MyApp(
-    )
-  );
+  runApp(MyApp());
   DependencyInjection.init();
 }
 
@@ -42,18 +37,8 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Sneaker Space',
-      initialRoute: Routes.HOME,
+      home: HomePage(),
       getPages: [
-        GetPage(
-          name: Routes.HOME,
-          page: () => WillPopScope(
-            onWillPop: () async {
-              settingsController.stopAudio();
-              return true;
-            },
-            child: HomePage(),
-          ),
-        ),
         GetPage(
           name: Routes.ARTICLE_DETAILS,
           page: () => WillPopScope(
@@ -69,7 +54,7 @@ class MyApp extends StatelessWidget {
           name: Routes.ARTICLE_DETAILS_WEBVIEW,
           page: () => WillPopScope(
             onWillPop: () async {
-              settingsController.stopAudio(); // Stop audio when navigating back
+              settingsController.stopAudio();
               return true;
             },
             child: ArticleDetailWebView(article: Get.arguments),

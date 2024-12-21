@@ -1,24 +1,13 @@
-import 'package:flutter/material.dart';
 import 'package:SneakerSpace/app/auth_controller.dart';
+import 'package:SneakerSpace/app/modules/forget_password/views/forget_password_view.dart';
 import 'package:SneakerSpace/app/modules/signup_page/views/signup_view.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class LoginPage extends StatefulWidget {
-  @override
-  State<LoginPage> createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage> {
+class LoginPage extends StatelessWidget {
   final AuthController _authController = Get.put(AuthController());
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,15 +57,23 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 SizedBox(height: 16),
                 // Password field
-                TextField(
-                  controller: _passwordController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    labelText: 'Password',
-                    prefixIcon: Icon(Icons.lock),
-                    border: OutlineInputBorder(),
-                  ),
-                ),
+                Obx(() {
+                  return TextField(
+                    controller: _passwordController,
+                    obscureText: _authController.isPasswordHidden.value,
+                    decoration: InputDecoration(
+                      labelText: 'Password',
+                      prefixIcon: Icon(Icons.lock),
+                      suffixIcon: IconButton(
+                        icon: Icon(_authController.isPasswordHidden.value
+                            ? Icons.visibility
+                            : Icons.visibility_off),
+                        onPressed: _authController.togglePasswordVisibility,
+                      ),
+                      border: OutlineInputBorder(),
+                    ),
+                  );
+                }),
                 SizedBox(height: 24),
                 // Sign in button with Firebase authentication
                 Obx(() {
@@ -91,17 +88,16 @@ class _LoginPageState extends State<LoginPage> {
                           },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFFD3A335),
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 100, vertical: 16),
+                      padding: EdgeInsets.symmetric(horizontal: 100, vertical: 16),
                     ),
                     child: _authController.isLoading.value
                         ? CircularProgressIndicator(color: Colors.white)
                         : Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text("SIGN IN",style: TextStyle(color: Colors.white),),
+                              Text("SIGN IN"),
                               SizedBox(width: 8),
-                              Icon(Icons.arrow_forward,color: Colors.white,),
+                              Icon(Icons.arrow_forward),
                             ],
                           ),
                   );
@@ -122,6 +118,16 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ],
                     ),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Get.to(() => ForgetPasswordPage());
+                  },
+                  child: Text(
+                    "Forgot Password?",
+                    style:
+                        TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
                   ),
                 ),
               ],

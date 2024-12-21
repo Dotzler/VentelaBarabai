@@ -32,6 +32,7 @@ abstract class Routes {
   static const BRANDS = _Paths.BRANDS;
   static const BUYPAGE = _Paths.BUYPAGE;
   static const CONNECTION = _Paths.CONNECTION;
+  static const FORGET_PASSWORD = _Paths.FORGET_PASSWORD;
 }
 
 abstract class _Paths {
@@ -66,4 +67,5 @@ abstract class _Paths {
   static const BRANDS = '/brands';
   static const BUYPAGE = '/buypage';
   static const CONNECTION = '/connection';
+  static const FORGET_PASSWORD = '/forget-password';
 }

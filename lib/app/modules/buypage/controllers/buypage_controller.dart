@@ -5,9 +5,11 @@ import 'package:geolocator/geolocator.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:SneakerSpace/app/database_controller.dart';
 import 'package:SneakerSpace/app/auth_controller.dart';
+import 'package:SneakerSpace/app/modules/cart_page/controllers/cart_controller.dart';
 
 class BuyPageController extends GetxController {
   final AuthController _authController = Get.put(AuthController());
+  final CartController _cartController = Get.find<CartController>();
 
   RxString shippingType = "Normal".obs;
   RxString phoneNumber = "".obs;
@@ -19,7 +21,7 @@ class BuyPageController extends GetxController {
   Rx<Position?> userPosition = Rx<Position?>(null);
   RxString address = "Address not available".obs;
 
-  Future <void> confirmPurchase({
+  Future<void> confirmPurchase({
     required String title,
     required int price,
     required int size,
@@ -27,6 +29,7 @@ class BuyPageController extends GetxController {
     required String phoneNumber,
     required String postalCode,
     required String message,
+    String? cartItemId,
   }) async {
     if (phoneNumber.isEmpty || postalCode.isEmpty) {
       Get.snackbar(
@@ -70,6 +73,10 @@ class BuyPageController extends GetxController {
         address: address.value, // Pass the resolved address
       );
 
+      if (cartItemId != null) {
+        await _cartController.removeItem(cartItemId);
+      }
+      
       Get.snackbar(
         "Success",
         "Order placed successfully! Order ID: $orderId",

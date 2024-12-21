@@ -9,6 +9,8 @@ import '../modules/cart_page/views/cart_view.dart';
 import '../modules/chat_page/views/chat_view.dart';
 import '../modules/connection/bindings/connection_binding.dart';
 import '../modules/connection/views/connection_view.dart';
+import '../modules/forget_password/bindings/forget_password_binding.dart';
+import '../modules/forget_password/views/forget_password_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/http_screen/bindings/http_binding.dart';
@@ -100,6 +102,11 @@ class AppPages {
       name: _Paths.CONNECTION,
       page: () => const ConnectionView(),
       binding: NetworkBinding(),
+    ),
+    GetPage(
+      name: _Paths.FORGET_PASSWORD,
+      page: () => ForgetPasswordPage(),
+      binding: ForgetPasswordBinding(),
     ),
   ];
 }
