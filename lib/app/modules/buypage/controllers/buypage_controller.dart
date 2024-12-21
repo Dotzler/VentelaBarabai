@@ -19,7 +19,7 @@ class BuyPageController extends GetxController {
   Rx<Position?> userPosition = Rx<Position?>(null);
   RxString address = "Address not available".obs;
 
-  void confirmPurchase({
+  Future <void> confirmPurchase({
     required String title,
     required int price,
     required int size,

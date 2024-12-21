@@ -7,6 +7,8 @@ import '../modules/brands/bindings/brands_binding.dart';
 import '../modules/brands/views/brands_view.dart';
 import '../modules/cart_page/views/cart_view.dart';
 import '../modules/chat_page/views/chat_view.dart';
+import '../modules/connection/bindings/connection_binding.dart';
+import '../modules/connection/views/connection_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/http_screen/bindings/http_binding.dart';
@@ -93,6 +95,11 @@ class AppPages {
       name: _Paths.BRANDS,
       page: () => AllBrandsPage(),
       binding: BrandsBinding(),
+    ),
+    GetPage(
+      name: _Paths.CONNECTION,
+      page: () => const ConnectionView(),
+      binding: NetworkBinding(),
     ),
   ];
 }

@@ -7,6 +7,7 @@ environment:
 
 dependencies: 
   cupertino_icons: ^1.0.2
+  shared_preferences:
   get: 4.6.6
   flutter: 
     sdk: flutter
@@ -28,6 +29,11 @@ dependencies:
   geolocator: ^13.0.2
   geocoding: ^3.0.0
   google_maps_flutter: ^2.10.0
+  connectivity_plus: ^6.1.1
+  carousel_slider: ^5.0.0
+  intl: ^0.17.0
+  cached_network_image: ^3.3.0
+  flutter_cache_manager: ^3.3.1
 
 dev_dependencies: 
   flutter_lints: ^2.0.0
@@ -59,3 +65,5 @@ flutter:
   - assets/la-stravaganza.mp3
   - assets/background.mp3
   - assets/ROSÉ_BrunoMars-APT.mp3
+  - assets/Nike-Air-Max-97.png
+  - assets/Yeezy-Slides.png

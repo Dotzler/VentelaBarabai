@@ -80,3 +80,4 @@ class AllBrandsPage extends StatelessWidget {
     );
   }
 }
+

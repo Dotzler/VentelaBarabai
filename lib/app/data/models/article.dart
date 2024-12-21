@@ -50,14 +50,14 @@ class Article {
     });
 
     factory Article.fromJson(Map<String, dynamic> json) => Article(
-        source: Source.fromJson(json["source"]),
-        author: json["author"],
-        title: json["title"],
-        description: json["description"],
-        url: json["url"],
+        source: Source.fromJson(json["source"] ?? {}),
+        author: json["author"] ?? 'Unknown',
+        title: json["title"] ?? '',
+        description: json["description"] ?? '',
+        url: json["url"] ?? '',
         urlToImage: json["urlToImage"],
-        publishedAt: DateTime.parse(json["publishedAt"]),
-        content: json["content"],
+        publishedAt: DateTime.parse(json["publishedAt"] ?? DateTime.now().toIso8601String()),
+        content: json["content"] ?? '',
     );
 
     Map<String, dynamic> toJson() => {

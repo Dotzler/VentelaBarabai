@@ -152,3 +152,4 @@ class BrandProductsPage extends StatelessWidget {
     );
   }
 }
+

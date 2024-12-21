@@ -31,6 +31,7 @@ abstract class Routes {
   static const BRAND = _Paths.BRAND;
   static const BRANDS = _Paths.BRANDS;
   static const BUYPAGE = _Paths.BUYPAGE;
+  static const CONNECTION = _Paths.CONNECTION;
 }
 
 abstract class _Paths {
@@ -64,4 +65,5 @@ abstract class _Paths {
   static const BRAND = '/brand';
   static const BRANDS = '/brands';
   static const BUYPAGE = '/buypage';
+  static const CONNECTION = '/connection';
 }
