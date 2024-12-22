@@ -139,8 +139,7 @@ class _ChatPageState extends State<ChatPage> {
                 padding: EdgeInsets.all(20),
                 itemCount: messages.length,
                 itemBuilder: (context, index) {
-                  bool isMe = index % 2 == 0;
-                  return _buildChatBubble(messages[index], isMe, index);
+                  return _buildChatBubble(messages[index], true, index); // Always pass true for isMe
                 },
               ),
             ),
@@ -159,36 +158,21 @@ class _ChatPageState extends State<ChatPage> {
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0),
         child: Row(
-          mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.end, // Always align to end
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            if (!isMe) ...[
-              CircleAvatar(
-                radius: 15,
-                backgroundColor: Color(0xFFD3A335).withOpacity(0.2),
-                child: Text(
-                  'A',
-                  style: TextStyle(
-                    color: Color(0xFFD3A335),
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              SizedBox(width: 8),
-            ],
             Container(
               constraints: BoxConstraints(
                 maxWidth: MediaQuery.of(context).size.width * 0.7,
               ),
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
-                color: isMe ? Color(0xFFD3A335) : Colors.grey[100],
+                color: Color(0xFFD3A335),
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(20),
                   topRight: Radius.circular(20),
-                  bottomLeft: Radius.circular(isMe ? 20 : 0),
-                  bottomRight: Radius.circular(isMe ? 0 : 20),
+                  bottomLeft: Radius.circular(20),
+                  bottomRight: Radius.circular(0),
                 ),
                 boxShadow: [
                   BoxShadow(
@@ -201,26 +185,24 @@ class _ChatPageState extends State<ChatPage> {
               child: Text(
                 message,
                 style: TextStyle(
-                  color: isMe ? Colors.white : Colors.black87,
+                  color: Colors.white,
                   fontSize: 16,
                 ),
               ),
             ),
-            if (isMe) ...[
-              SizedBox(width: 8),
-              CircleAvatar(
-                radius: 15,
-                backgroundColor: Color(0xFFD3A335).withOpacity(0.2),
-                child: Text(
-                  'Me',
-                  style: TextStyle(
-                    color: Color(0xFFD3A335),
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                  ),
+            SizedBox(width: 8),
+            CircleAvatar(
+              radius: 15,
+              backgroundColor: Color(0xFFD3A335).withOpacity(0.2),
+              child: Text(
+                'Me',
+                style: TextStyle(
+                  color: Color(0xFFD3A335),
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-            ],
+            ),
           ],
         ),
       ),

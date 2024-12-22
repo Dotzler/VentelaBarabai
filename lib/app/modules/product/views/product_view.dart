@@ -1,6 +1,7 @@
 import 'package:SneakerSpace/app/modules/buypage/views/buypage_view.dart';
 import 'package:SneakerSpace/app/modules/cart_page/controllers/cart_controller.dart';
 import 'package:SneakerSpace/app/modules/order/controllers/order_controller.dart';
+import 'package:SneakerSpace/app/modules/reviewPage/views/review_page_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -117,7 +118,9 @@ class _ProductPageState extends State<ProductPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 //title to image padding
-                                SizedBox(height: 25,),
+                                SizedBox(
+                                  height: 25,
+                                ),
                                 Text(
                                   widget.title,
                                   style: TextStyle(
@@ -181,8 +184,8 @@ class _ProductPageState extends State<ProductPage> {
                                     boxShadow: selectedSize == size
                                         ? [
                                             BoxShadow(
-                                              color:
-                                                  Color(0xFFD3A335).withOpacity(0.3),
+                                              color: Color(0xFFD3A335)
+                                                  .withOpacity(0.3),
                                               blurRadius: 8,
                                               offset: Offset(0, 3),
                                             ),
@@ -223,6 +226,37 @@ class _ProductPageState extends State<ProductPage> {
                           fontSize: 16,
                           color: Colors.grey[600],
                           height: 1.5,
+                        ),
+                      ),
+                      SizedBox(height: 30),
+
+                      // After the description Text widget in the Column, add:
+                      ElevatedButton(
+                        onPressed: () {
+                          Get.to(() => ReviewPageView());
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: Color(0xFFD3A335),
+                          padding: EdgeInsets.symmetric(vertical: 15),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                            side: BorderSide(color: Color(0xFFD3A335)),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.rate_review),
+                            SizedBox(width: 8),
+                            Text(
+                              "Lihat Review Produk",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       SizedBox(height: 30),

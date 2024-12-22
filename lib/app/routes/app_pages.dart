@@ -19,6 +19,8 @@ import '../modules/login_page/views/login_view.dart';
 import '../modules/microphone/views/microphone_view.dart';
 import '../modules/order/views/order_view.dart';
 import '../modules/profile_page/views/profile_view.dart';
+import '../modules/reviewPage/bindings/review_page_binding.dart';
+import '../modules/reviewPage/views/review_page_view.dart';
 import '../modules/settings/views/settings_view.dart';
 import '../modules/signup_page/views/signup_view.dart';
 import '../modules/store_page/views/store_view.dart';
@@ -107,6 +109,11 @@ class AppPages {
       name: _Paths.FORGET_PASSWORD,
       page: () => ForgetPasswordPage(),
       binding: ForgetPasswordBinding(),
+    ),
+    GetPage(
+      name: _Paths.REVIEW_PAGE,
+      page: () => const ReviewPageView(),
+      binding: ReviewPageBinding(),
     ),
   ];
 }

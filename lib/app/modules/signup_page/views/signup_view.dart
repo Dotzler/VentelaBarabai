@@ -29,14 +29,6 @@ class _SignUpPageState extends State<SignUpPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.location_on),
-                SizedBox(width: 8),
-                Text("Malang, Indonesia"),
-              ],
-            ),
             SizedBox(height: 24),
             Text(
               "Getting Started",
@@ -75,25 +67,6 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
             ),
             SizedBox(height: 24),
-            // Terms and conditions checkbox
-            Row(
-              children: [
-                Checkbox(
-                  value: true,
-                  onChanged: (value) {},
-                ),
-                GestureDetector(
-                  onTap: () {},
-                  child: Text(
-                    "Agree to our Terms & Conditions",
-                    style: TextStyle(
-                      decoration: TextDecoration.underline,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 16),
             // Sign up button
             Obx(() {
               return ElevatedButton(

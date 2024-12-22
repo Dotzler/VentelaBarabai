@@ -21,15 +21,6 @@ class LoginPage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.location_on),
-                    SizedBox(width: 8),
-                    Text("Malang, Indonesia"),
-                  ],
-                ),
-                SizedBox(height: 24),
                 Text(
                   "Let's Sign You In",
                   style: TextStyle(
@@ -95,9 +86,9 @@ class LoginPage extends StatelessWidget {
                         : Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text("SIGN IN"),
+                              Text("SIGN IN", style: TextStyle(color: Colors.white),),
                               SizedBox(width: 8),
-                              Icon(Icons.arrow_forward),
+                              Icon(Icons.arrow_forward, color: Colors.white,),
                             ],
                           ),
                   );

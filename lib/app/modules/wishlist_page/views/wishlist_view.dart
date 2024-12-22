@@ -81,7 +81,7 @@ class WishlistPage extends StatelessWidget {
                     SizedBox(width: 16),
                     ElevatedButton(
                       onPressed: () {
-                        wishlistController.removeFromWishlist(item.id);
+                        wishlistController.removeFromWishlist(item.name);
                         Get.back();
                       },
                       style: ElevatedButton.styleFrom(

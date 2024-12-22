@@ -5,15 +5,33 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:video_player/video_player.dart';
 
-class ReviewView extends StatelessWidget {
+
+class ReviewView extends StatefulWidget {
   final Map<String, dynamic> item;
 
   const ReviewView({Key? key, required this.item}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final controller = Get.put(ReviewController());
+  State<ReviewView> createState() => _ReviewViewState();
+}
 
+class _ReviewViewState extends State<ReviewView> {
+  late ReviewController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = Get.put(ReviewController());
+  }
+
+  @override
+  void dispose() {
+    Get.delete<ReviewController>();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
@@ -25,8 +43,6 @@ class ReviewView extends StatelessWidget {
           ),
         ),
         backgroundColor: const Color(0xFFD3A335),
-        shape: const RoundedRectangleBorder(
-        ),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -65,7 +81,7 @@ class ReviewView extends StatelessWidget {
                       const SizedBox(width: 12),
                       Expanded(
                         child: Text(
-                          item['productName'],
+                          widget.item['productName'],
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -118,12 +134,24 @@ class ReviewView extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    "Tambahkan Media",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        "Tambahkan Media",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Obx(() => Text(
+                        "${controller.mediaList.length}/6 media",
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                          fontSize: 14,
+                        ),
+                      )),
+                    ],
                   ),
                   const SizedBox(height: 12),
                   Row(
@@ -147,6 +175,14 @@ class ReviewView extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   Obx(() {
+                    if (controller.isImageLoading.value) {
+                      return const Center(
+                        child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFD3A335)),
+                        ),
+                      );
+                    }
+                    
                     return controller.mediaList.isEmpty
                         ? Center(
                             child: Text(
@@ -168,7 +204,7 @@ class ReviewView extends StatelessWidget {
                             itemCount: controller.mediaList.length,
                             itemBuilder: (context, index) {
                               final media = controller.mediaList[index];
-                              return _buildMediaThumbnail(context, media, controller, index);
+                              return _buildMediaThumbnail(context, media, index);
                             },
                           );
                   }),
@@ -178,8 +214,10 @@ class ReviewView extends StatelessWidget {
             const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.all(16),
-              child: ElevatedButton(
-                onPressed: () => controller.submitReview(context),
+              child: Obx(() => ElevatedButton(
+                onPressed: controller.isSubmitting.value 
+                    ? null 
+                    : () => controller.submitReview(context, widget.item),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFD3A335),
                   shape: RoundedRectangleBorder(
@@ -189,22 +227,31 @@ class ReviewView extends StatelessWidget {
                   minimumSize: const Size(double.infinity, 50),
                   elevation: 0,
                 ),
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.send, color: Colors.white),
-                    SizedBox(width: 8),
-                    Text(
-                      "Kirim Ulasan",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                child: controller.isSubmitting.value
+                    ? const SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        ),
+                      )
+                    : const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.send, color: Colors.white),
+                          SizedBox(width: 8),
+                          Text(
+                            "Kirim Ulasan",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
-                ),
-              ),
+              )),
             ),
           ],
         ),
@@ -250,7 +297,6 @@ class ReviewView extends StatelessWidget {
   Widget _buildMediaThumbnail(
     BuildContext context,
     Map<String, dynamic> media,
-    ReviewController controller,
     int index,
   ) {
     return Stack(
@@ -262,14 +308,16 @@ class ReviewView extends StatelessWidget {
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(12),
-            child: _buildMediaPreview(context, media, controller),
+            child: _buildMediaPreview(context, media),
           ),
         ),
         Positioned(
           top: 5,
           right: 5,
           child: GestureDetector(
-            onTap: () => controller.removeMedia(index),
+            onTap: () => setState(() {
+              controller.removeMedia(index);
+            }),
             child: Container(
               padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
@@ -280,25 +328,43 @@ class ReviewView extends StatelessWidget {
             ),
           ),
         ),
+        if (controller.uploadProgress.value > 0 && controller.uploadProgress.value < 1)
+          Positioned.fill(
+            child: Container(
+              color: Colors.black.withOpacity(0.5),
+              child: Center(
+                child: CircularProgressIndicator(
+                  value: controller.uploadProgress.value,
+                  valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
+              ),
+            ),
+          ),
       ],
     );
   }
 
-  Widget _buildMediaPreview(BuildContext context, Map<String, dynamic> media, ReviewController controller) {
+  Widget _buildMediaPreview(BuildContext context, Map<String, dynamic> media) {
     if (media['type'] == 'image') {
       return GestureDetector(
         onTap: () => _showFullScreenImage(context, media['path']),
         child: Image.file(
           File(media['path']),
           fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            return Container(
+              color: Colors.grey[300],
+              child: const Icon(Icons.error),
+            );
+          },
         ),
       );
     } else if (media['type'] == 'video') {
-      final videoController = media['controller'] as VideoPlayerController?;
+      final VideoPlayerController? videoController = media['controller'];
       if (videoController == null) return Container();
 
       return GestureDetector(
-        onTap: () => _showFullScreenVideo(context, media['path'], controller),
+        onTap: () => _showFullScreenVideo(context, videoController),
         child: Stack(
           alignment: Alignment.center,
           children: [
@@ -332,12 +398,11 @@ class ReviewView extends StatelessWidget {
         backgroundColor: Colors.transparent,
         insetPadding: EdgeInsets.zero,
         child: Stack(
+          fit: StackFit.expand,
           children: [
             GestureDetector(
               onTap: () => Navigator.pop(context),
               child: Container(
-                width: double.infinity,
-                height: double.infinity,
                 color: Colors.black87,
                 child: InteractiveViewer(
                   child: Image.file(
@@ -361,16 +426,14 @@ class ReviewView extends StatelessWidget {
     );
   }
 
-  void _showFullScreenVideo(BuildContext context, String videoPath, ReviewController controller) {
-    final videoController = controller.getControllerForPath(videoPath);
-    if (videoController == null) return;
-
+  void _showFullScreenVideo(BuildContext context, VideoPlayerController videoController) {
     showDialog(
       context: context,
       builder: (_) => Dialog(
         backgroundColor: Colors.black,
         insetPadding: EdgeInsets.zero,
         child: Stack(
+          fit: StackFit.expand,
           children: [
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -379,33 +442,29 @@ class ReviewView extends StatelessWidget {
                   aspectRatio: videoController.value.aspectRatio,
                   child: VideoPlayer(videoController),
                 ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: VideoProgressIndicator(
-                    videoController,
-                    allowScrubbing: true,
-                    colors: VideoProgressColors(
-                      playedColor: const Color(0xFFD3A335),
-                      backgroundColor: Colors.grey[800]!,
-                      bufferedColor: Colors.grey[600]!,
-                    ),
+                VideoProgressIndicator(
+                  videoController,
+                  allowScrubbing: true,
+                  colors: VideoProgressColors(
+                    playedColor: const Color(0xFFD3A335),
+                    backgroundColor: Colors.grey[800]!,
+                    bufferedColor: Colors.grey[600]!,
                   ),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 ),
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        icon: Icon(
-                          videoController.value.isPlaying ? Icons.pause : Icons.play_arrow,
-                          color: Colors.white,
-                          size: 36,
-                        ),
-                        onPressed: () => controller.togglePlayPause(videoPath),
-                      ),
-                    ],
+                IconButton(
+                  icon: Icon(
+                    videoController.value.isPlaying ? Icons.pause : Icons.play_arrow,
+                    color: Colors.white,
+                    size: 36,
                   ),
+                  onPressed: () {
+                    setState(() {
+                      videoController.value.isPlaying
+                          ? videoController.pause()
+                          : videoController.play();
+                    });
+                  },
                 ),
               ],
             ),

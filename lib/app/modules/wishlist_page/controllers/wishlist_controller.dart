@@ -36,7 +36,7 @@ class WishlistItem {
 }
 
 class WishlistController extends GetxController {
-  final wishlist = <WishlistItem>[].obs;
+  final RxList<WishlistItem> wishlist = <WishlistItem>[].obs;
   final FirebaseAuth auth = FirebaseAuth.instance;
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
@@ -48,27 +48,41 @@ class WishlistController extends GetxController {
     fetchWishlist();
   }
 
-  /// Checks if an item is already in the wishlist
+  /// Checks if an item is in the wishlist
   bool isFavorite(String name) {
     return wishlist.any((item) => item.name == name);
   }
 
-  /// Menambahkan item ke wishlist
+  /// Add item to wishlist
   Future<void> addToWishlist(String name, String imagePath, int price) async {
     if (userId.isEmpty) return;
 
     try {
-      final collectionRef =
-          firestore.collection('wishlists').doc(userId).collection('items');
-      final querySnapshot =
-          await collectionRef.where('name', isEqualTo: name).get();
+      final collectionRef = firestore
+          .collection('wishlists')
+          .doc(userId)
+          .collection('items');
+      
+      // Check if item already exists
+      final querySnapshot = await collectionRef
+          .where('name', isEqualTo: name)
+          .get();
 
       if (querySnapshot.docs.isEmpty) {
-        await collectionRef.add({
+        // Add new item
+        final docRef = await collectionRef.add({
           'name': name,
           'price': price,
           'imagePath': imagePath,
         });
+
+        // Update local wishlist
+        wishlist.add(WishlistItem(
+          id: docRef.id,
+          name: name,
+          price: price,
+          imagePath: imagePath,
+        ));
 
         Get.snackbar(
           "Wishlist",
@@ -77,8 +91,6 @@ class WishlistController extends GetxController {
           backgroundColor: Colors.white,
           colorText: Colors.black,
         );
-
-        fetchWishlist();
       } else {
         Get.snackbar(
           "Wishlist",
@@ -99,26 +111,39 @@ class WishlistController extends GetxController {
     }
   }
 
-  /// Menghapus item dari wishlist
+  /// Remove item from wishlist
   Future<void> removeFromWishlist(String id) async {
     if (userId.isEmpty) return;
 
     try {
-      await firestore
+      // Find the item by name in Firestore
+      final querySnapshot = await firestore
           .collection('wishlists')
           .doc(userId)
           .collection('items')
-          .doc(id)
-          .delete();
-      Get.snackbar(
-        "Berhasil",
-        "Item telah dihapus dari wishlist!",
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.white,
-        colorText: Colors.black,
-      );
+          .where('name', isEqualTo: id)
+          .get();
 
-      fetchWishlist();
+      if (querySnapshot.docs.isNotEmpty) {
+        // Delete the document from Firestore
+        await firestore
+            .collection('wishlists')
+            .doc(userId)
+            .collection('items')
+            .doc(querySnapshot.docs.first.id)
+            .delete();
+
+        // Remove from local wishlist
+        wishlist.removeWhere((item) => item.name == id);
+
+        Get.snackbar(
+          "Berhasil",
+          "Item telah dihapus dari wishlist!",
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.white,
+          colorText: Colors.black,
+        );
+      }
     } catch (e) {
       Get.snackbar(
         "Error",
@@ -130,14 +155,18 @@ class WishlistController extends GetxController {
     }
   }
 
-  /// Mengambil data wishlist dari Firestore
+  /// Fetch wishlist from Firestore
   Future<void> fetchWishlist() async {
     if (userId.isEmpty) return;
 
     try {
-      final collectionRef =
-          firestore.collection('wishlists').doc(userId).collection('items');
+      final collectionRef = firestore
+          .collection('wishlists')
+          .doc(userId)
+          .collection('items');
+      
       final querySnapshot = await collectionRef.get();
+      
       wishlist.value = querySnapshot.docs
           .map((doc) => WishlistItem.fromFirestore(doc))
           .toList();

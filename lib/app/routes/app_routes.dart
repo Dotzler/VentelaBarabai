@@ -33,6 +33,7 @@ abstract class Routes {
   static const BUYPAGE = _Paths.BUYPAGE;
   static const CONNECTION = _Paths.CONNECTION;
   static const FORGET_PASSWORD = _Paths.FORGET_PASSWORD;
+  static const REVIEW_PAGE = _Paths.REVIEW_PAGE;
 }
 
 abstract class _Paths {
@@ -68,4 +69,5 @@ abstract class _Paths {
   static const BUYPAGE = '/buypage';
   static const CONNECTION = '/connection';
   static const FORGET_PASSWORD = '/forget-password';
+  static const REVIEW_PAGE = '/review-page';
 }
