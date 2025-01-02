@@ -48,7 +48,7 @@ class AuthController extends GetxController {
 
       if (user != null) {
         // Jika email adalah email admin
-        if (email == "sneakerspacedev@gmail.com" && password == "admin123") {
+        if (email == "ventelabarabai@sneakers.zone" && password == "admin123") {
           Get.snackbar(
             'Berhasil',
             'Login sebagai Admin berhasil!',

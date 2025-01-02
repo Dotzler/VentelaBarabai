@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/app/auth_controller.dart';
 import 'package:flutter_application_1/app/data/services/notification_service.dart';
 import 'package:flutter_application_1/app/modules/cart_page/controllers/cart_controller.dart';
 import 'package:get/get.dart';
@@ -14,6 +15,7 @@ void main() async {
   Get.put(AdminController());
   await NotificationService().initNotifications();
   Get.put(CartController());
+  Get.put(AuthController());
 
   runApp(MyApp());
 }

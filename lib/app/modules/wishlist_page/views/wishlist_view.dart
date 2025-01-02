@@ -90,7 +90,7 @@ class WishlistPage extends StatelessWidget {
                       IconButton(
                         icon: Icon(Icons.delete, color: Colors.red),
                         onPressed: () {
-                          wishlistController.removeFromWishlist(index);
+                          wishlistController.removeFromWishlist(item.name);
                         },
                       ),
                     ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/app/modules/buypage/views/buypage_view.dart';
 import 'package:get/get.dart';
 import '../../cart_page/controllers/cart_controller.dart';
 
@@ -103,12 +104,27 @@ class _ProductPageState extends State<ProductPage> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    // Navigate to Checkout page here
+                    if (selectedSize != null) {
+                      Get.to(
+                        () => BuyPageView(
+                          title: widget.title,
+                          price: widget.price,
+                          imagePath: widget.imagePath,
+                          size: selectedSize!,
+                        ),
+                      );
+                    } else {
+                      Get.snackbar(
+                        "Pilih Ukuran",
+                        "Silakan pilih ukuran terlebih dahulu",
+                        snackPosition: SnackPosition.TOP,
+                      );
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFFD3A335),
                   ),
-                  child: Text("Buy Now", style: TextStyle(color: Colors.white),),
+                  child: Text("Buy Now", style: TextStyle(color: Colors.white)),
                 ),
                 ElevatedButton(
                   onPressed: () {

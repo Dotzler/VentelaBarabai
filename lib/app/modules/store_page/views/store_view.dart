@@ -9,6 +9,7 @@ import '../../chat_page/views/chat_view.dart';
 import '../../profile_page/views/profile_view.dart';
 import '../../wishlist_page/views/wishlist_view.dart';
 import '../../product/views/product_view.dart';
+import 'package:intl/intl.dart';
 
 class StorePage extends StatefulWidget {
   @override
@@ -271,82 +272,143 @@ class _StorePageState extends State<StorePage> {
         );
       },
       child: Container(
-        width: 160,
-        height: 280,
+        width: 180,
+        height: 300,
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(16.0),
+          borderRadius: BorderRadius.circular(20.0),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.3),
-              blurRadius: 10,
-              spreadRadius: 2,
+              color: Colors.black.withOpacity(0.08),
+              blurRadius: 15,
+              spreadRadius: 1,
+              offset: Offset(0, 4),
             ),
           ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Center(
-              child: Hero(
-                tag: "$brand $name",
-                child: Image.asset(
-                  assetPath,
-                  width: 120,
-                  height: 120,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-            SizedBox(height: 8),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Text(
-                brand, // Nama brand
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Text(
-                name, // Nama produk
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey[700],
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Text(
-                "Rp $price", // Harga
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey[600],
-                ),
-              ),
-            ),
-            Spacer(),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: ElevatedButton(
-                onPressed: () {
-                  wishlistController.addToWishlist(name, assetPath, price);
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFFD3A335),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16.0),
+            // Image Container with Gradient Overlay
+            Stack(
+              children: [
+                Container(
+                  height: 180,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20.0),
+                      topRight: Radius.circular(20.0),
+                    ),
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.grey.shade50,
+                        Colors.white,
+                      ],
+                    ),
+                  ),
+                  child: Center(
+                    child: Hero(
+                      tag: "$brand $name",
+                      child: Image.asset(
+                        assetPath,
+                        width: 150,
+                        height: 150,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
                   ),
                 ),
-                child: Text(
-                  "Add to Wishlist",
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(color: Colors.white,),
+                // Favorite Button
+                Positioned(
+                  top: 8,
+                  right: 8,
+                  child: Obx(() {
+                    final isFavorite = wishlistController.isFavorite(name);
+                    return Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () {
+                          if (isFavorite) {
+                            wishlistController.removeFromWishlist(name);
+                          } else {
+                            wishlistController.addToWishlist(name, assetPath, price);
+                          }
+                        },
+                        borderRadius: BorderRadius.circular(50),
+                        child: Container(
+                          padding: EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                blurRadius: 8,
+                                spreadRadius: 1,
+                              ),
+                            ],
+                          ),
+                          child: Icon(
+                            isFavorite ? Icons.favorite : Icons.favorite_border,
+                            color: isFavorite ? Color(0xFFD3A335) : Colors.grey,
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                    );
+                  }),
+                ),
+              ],
+            ),
+            // Product Info
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Brand
+                    Text(
+                      brand,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 0.5,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    SizedBox(height: 4),
+                    // Product Name
+                    Text(
+                      name,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey[600],
+                        height: 1.2,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    SizedBox(height: 8),
+                    // Price with currency formatting
+                    Text(
+                      NumberFormat.currency(
+                        locale: 'id',
+                        symbol: 'Rp ',
+                        decimalDigits: 0,
+                      ).format(price),
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFFD3A335),
+                      ),
+                    ),
+                    Spacer(),
+                    // Add to Cart Button
+                  ],
                 ),
               ),
             ),

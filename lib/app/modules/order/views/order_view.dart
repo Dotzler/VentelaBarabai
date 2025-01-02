@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/app/auth_controller.dart';
 import 'package:flutter_application_1/app/modules/guest_login/views/guest_login_view.dart';
+import 'package:flutter_application_1/app/modules/review/views/review_view.dart';
 import 'package:get/get.dart';
 import '../controllers/order_controller.dart';
 
@@ -127,7 +128,8 @@ class OrderPage extends StatelessWidget {
                 alignment: Alignment.centerRight,
                 child: ElevatedButton(
                   onPressed: () {
-                    // Navigate to review page
+                    // Navigasi ke ReviewView
+                    Get.to(() => ReviewView(item: item));
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFD3A335),
