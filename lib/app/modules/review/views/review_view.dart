@@ -1,4 +1,4 @@
-import 'package:SneakerSpace/app/modules/review/controllers/review_controller.dart';
+import 'package:VentelaBarabai/app/modules/review/controllers/review_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'dart:io';

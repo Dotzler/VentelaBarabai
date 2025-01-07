@@ -1,5 +1,5 @@
-import 'package:SneakerSpace/app/modules/product/views/product_view.dart';
-import 'package:SneakerSpace/app/modules/wishlist_page/controllers/wishlist_controller.dart';
+import 'package:VentelaBarabai/app/modules/product/views/product_view.dart';
+import 'package:VentelaBarabai/app/modules/wishlist_page/controllers/wishlist_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

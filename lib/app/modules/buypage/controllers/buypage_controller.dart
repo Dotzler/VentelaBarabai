@@ -3,9 +3,9 @@ import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:SneakerSpace/app/database_controller.dart';
-import 'package:SneakerSpace/app/auth_controller.dart';
-import 'package:SneakerSpace/app/modules/cart_page/controllers/cart_controller.dart';
+import 'package:VentelaBarabai/app/database_controller.dart';
+import 'package:VentelaBarabai/app/auth_controller.dart';
+import 'package:VentelaBarabai/app/modules/cart_page/controllers/cart_controller.dart';
 
 class BuyPageController extends GetxController {
   final AuthController _authController = Get.put(AuthController());

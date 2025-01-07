@@ -1,8 +1,9 @@
+import 'package:VentelaBarabai/app/modules/AdminPage/views/admin_page_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:SneakerSpace/app/modules/login_page/views/login_view.dart';
-import 'package:SneakerSpace/app/modules/store_page/views/store_view.dart';
+import 'package:VentelaBarabai/app/modules/login_page/views/login_view.dart';
+import 'package:VentelaBarabai/app/modules/store_page/views/store_view.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:get_storage/get_storage.dart';
@@ -50,21 +51,29 @@ Future<void> loginUser(String email, String password) async {
     User? user = userCredential.user;
 
     if (user != null) {
-      DocumentSnapshot userData = await _firestore.collection('users').doc(user.uid).get();
-      userProfile.value = userData.data() as Map<String, dynamic>;
+        // Jika email adalah email admin
+        if (email == "adminbarabai@sneakers.zone" && password == "admin123") {
+          Get.snackbar(
+            'Berhasil',
+            'Login sebagai Admin berhasil!',
+            backgroundColor: Colors.green,
+            colorText: Colors.white,
+          );
+          Get.offAll(() => AdminPage());
+        } else {
+          // Ambil data profil pengguna dari Firestore
+          DocumentSnapshot userData = await _firestore.collection('users').doc(user.uid).get();
+          userProfile.value = userData.data() as Map<String, dynamic>;
 
-      // Save login state
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setBool('isLoggedIn', true);
-
-      Get.snackbar(
-        'Success',
-        'Login successful!',
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-      );
-      Get.offAll(() => StorePage());
-    }
+          Get.snackbar(
+            'Berhasil',
+            'Login sebagai Pengguna berhasil!',
+            backgroundColor: Colors.green,
+            colorText: Colors.white,
+          );
+          Get.offAll(() => StorePage());
+        }
+      }
   } on FirebaseAuthException catch (e) {
     String errorMessage;
 

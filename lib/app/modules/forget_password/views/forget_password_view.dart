@@ -1,4 +1,4 @@
-import 'package:SneakerSpace/app/auth_controller.dart';
+import 'package:VentelaBarabai/app/auth_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

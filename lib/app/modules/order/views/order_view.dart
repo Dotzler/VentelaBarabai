@@ -1,8 +1,8 @@
-import 'package:SneakerSpace/app/modules/review/views/review_view.dart';
+import 'package:VentelaBarabai/app/modules/review/views/review_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/order_controller.dart';
-import 'package:SneakerSpace/app/auth_controller.dart';
+import 'package:VentelaBarabai/app/auth_controller.dart';
 
 class OrderPage extends StatelessWidget {
   final OrderController orderController = Get.put(OrderController());

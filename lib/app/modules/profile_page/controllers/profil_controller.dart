@@ -1,6 +1,6 @@
-import 'package:SneakerSpace/app/auth_controller.dart';
-import 'package:SneakerSpace/app/modules/settings/views/settings_view.dart';
-import 'package:SneakerSpace/app/storage_controller.dart';
+import 'package:VentelaBarabai/app/auth_controller.dart';
+import 'package:VentelaBarabai/app/modules/settings/views/settings_view.dart';
+import 'package:VentelaBarabai/app/storage_controller.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 

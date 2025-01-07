@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:SneakerSpace/app/modules/settings/controllers/settings_controller.dart';
+import 'package:VentelaBarabai/app/modules/settings/controllers/settings_controller.dart';
 import 'package:get/get.dart';
 
 class SettingsView extends StatelessWidget {

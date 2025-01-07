@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/cart_controller.dart';
-import 'package:SneakerSpace/app/modules/buypage/views/buypage_view.dart';
+import 'package:VentelaBarabai/app/modules/buypage/views/buypage_view.dart';
 
 class CartPage extends StatelessWidget {
   final CartController cartController = Get.put(CartController());

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:SneakerSpace/app/auth_controller.dart';
+import 'package:VentelaBarabai/app/auth_controller.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -57,7 +57,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                 ),
                 child: Center(
                   child: Image.asset(
-                    'assets/SneakerSpace.png',
+                    'assets/ventelabarabai.png',
                     fit: BoxFit.cover,
                   ),
                 ),

@@ -70,4 +70,5 @@ abstract class _Paths {
   static const CONNECTION = '/connection';
   static const FORGET_PASSWORD = '/forget-password';
   static const REVIEW_PAGE = '/review-page';
+  static const ADMIN_PAGE = '/admin-page';
 }

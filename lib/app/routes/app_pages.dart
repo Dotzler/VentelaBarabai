@@ -1,10 +1,10 @@
 import 'package:get/get.dart';
 
+import '../modules/AdminPage/bindings/admin_page_binding.dart';
+import '../modules/AdminPage/views/admin_page_view.dart';
 import '../modules/article_detail/bindings/article_detail_bindings.dart';
 import '../modules/article_detail/views/article_detail_view.dart';
 import '../modules/article_detail/views/article_detail_web_view.dart';
-import '../modules/brands/bindings/brands_binding.dart';
-import '../modules/brands/views/brands_view.dart';
 import '../modules/cart_page/views/cart_view.dart';
 import '../modules/chat_page/views/chat_view.dart';
 import '../modules/connection/bindings/connection_binding.dart';
@@ -96,11 +96,6 @@ class AppPages {
       page: () => OrderPage(),
     ),
     GetPage(
-      name: _Paths.BRANDS,
-      page: () => AllBrandsPage(),
-      binding: BrandsBinding(),
-    ),
-    GetPage(
       name: _Paths.CONNECTION,
       page: () => const ConnectionView(),
       binding: NetworkBinding(),
@@ -114,6 +109,11 @@ class AppPages {
       name: _Paths.REVIEW_PAGE,
       page: () => const ReviewPageView(),
       binding: ReviewPageBinding(),
+    ),
+    GetPage(
+      name: _Paths.ADMIN_PAGE,
+      page: () => AdminPage(),
+      binding: AdminPageBinding(),
     ),
   ];
 }

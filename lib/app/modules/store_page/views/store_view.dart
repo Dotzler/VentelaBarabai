@@ -1,13 +1,11 @@
-import 'package:SneakerSpace/app/modules/brands/views/brands_view.dart';
-import 'package:SneakerSpace/app/modules/cart_page/views/cart_view.dart';
-import 'package:SneakerSpace/app/modules/chat_page/views/chat_view.dart';
-import 'package:SneakerSpace/app/modules/order/views/order_view.dart';
-import 'package:SneakerSpace/app/modules/product/views/product_view.dart';
-import 'package:SneakerSpace/app/modules/profile_page/views/profile_view.dart';
-import 'package:SneakerSpace/app/modules/store_page/controllers/store_controller.dart';
-import 'package:SneakerSpace/app/modules/wishlist_page/controllers/wishlist_controller.dart';
-import 'package:SneakerSpace/app/modules/wishlist_page/views/wishlist_view.dart';
-import 'package:SneakerSpace/app/modules/brand/views/brand_view.dart';
+import 'package:VentelaBarabai/app/modules/cart_page/views/cart_view.dart';
+import 'package:VentelaBarabai/app/modules/chat_page/views/chat_view.dart';
+import 'package:VentelaBarabai/app/modules/order/views/order_view.dart';
+import 'package:VentelaBarabai/app/modules/product/views/product_view.dart';
+import 'package:VentelaBarabai/app/modules/profile_page/views/profile_view.dart';
+import 'package:VentelaBarabai/app/modules/store_page/controllers/store_controller.dart';
+import 'package:VentelaBarabai/app/modules/wishlist_page/controllers/wishlist_controller.dart';
+import 'package:VentelaBarabai/app/modules/wishlist_page/views/wishlist_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../http_screen/views/http_view.dart';
@@ -86,7 +84,7 @@ class _StorePageState extends State<StorePage> {
         elevation: 0,
         centerTitle: true,
         title: Text(
-          "Sneaker Space",
+          "Ventela Barabai",
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -143,7 +141,7 @@ class _StorePageState extends State<StorePage> {
                       .searchProduct(value); // Panggil fungsi pencarian
                 },
                 decoration: InputDecoration(
-                  hintText: 'Search Your Favorite Sneakers',
+                  hintText: 'Search Your Favorite Ventela Sneakers',
                   hintStyle: TextStyle(
                     color: Colors.grey[500],
                     fontSize: 14,
@@ -165,8 +163,6 @@ class _StorePageState extends State<StorePage> {
             SizedBox(height: 16),
             _buildBanner(),
             SizedBox(height: 24),
-            _buildBrandSection(),
-            SizedBox(height: 24),
             _buildNewArrivalSection(),
             SizedBox(height: 24),
           ],
@@ -176,305 +172,59 @@ class _StorePageState extends State<StorePage> {
   }
 
   Widget _buildBanner() {
-    final List<Map<String, dynamic>> bannerItems = [
-      {
-        'title': 'Air Jordan 1 X Travis Scott',
-        'originalPrice': 20000000,
-        'discount': 0.20,
-        'imagePath': 'assets/Jordan-1-High-OG-Travis-Scott-x-Fragment-1.png',
-        'description': 'Limited Edition Collection',
-      },
-      {
-        'title': 'Nike Air Max 97',
-        'originalPrice': 15000000,
-        'discount': 0.15,
-        'imagePath': 'assets/Nike-Air-Max-97.png',
-        'description': 'Classic Comfort Design',
-      },
-      {
-        'title': 'Adidas Yeezy Boost 350',
-        'originalPrice': 1800000,
-        'discount': 0.25,
-        'imagePath': 'assets/Yeezy-Slides.png',
-        'description': 'Modern Street Style',
-      },
+    final List<String> bannerImages = [
+      "assets/backToSchool.png",
+      "assets/christmasNewYear.png",
     ];
 
     return CarouselSlider(
       options: CarouselOptions(
-        height: 320.0,
+        height: 250.0,
         autoPlay: true,
         enlargeCenterPage: true,
-        viewportFraction: 1,
+        viewportFraction: 1.0, // Gambar full lebar
+        aspectRatio: 16 / 9,
         autoPlayInterval: Duration(seconds: 5),
-        autoPlayCurve: Curves.easeInOutCubic,
       ),
-      items: bannerItems.map((item) {
-        final double discountedPrice = item['originalPrice'] * (1 - item['discount']);
-        final int discountPercentage = (item['discount'] * 100).round();
-
+      items: bannerImages.map((imagePath) {
         return Builder(
           builder: (BuildContext context) {
-            return Container(
-              width: MediaQuery.of(context).size.width,
-              margin: EdgeInsets.symmetric(horizontal: 8.0),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20.0),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
-                    spreadRadius: 2,
-                    blurRadius: 15,
-                    offset: Offset(0, 5),
+            return Stack(
+              children: [
+                // Gambar penuh
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12.0),
+                    image: DecorationImage(
+                      image: AssetImage(imagePath),
+                      fit: BoxFit.cover, // Gambar penuh
+                    ),
                   ),
-                ],
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20.0),
-                child: Stack(
-                  children: [
-                    // Background Image
-                    Positioned.fill(
-                      child: Image.asset(
-                        item['imagePath'],
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    // Gradient Overlay
-                    Positioned.fill(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              Colors.transparent,
-                              Colors.black.withOpacity(0.1),
-                              Colors.black.withOpacity(0.5),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    // Content Overlay
-                    Positioned(
-                      bottom: 0,
-                      left: 0,
-                      right: 0,
-                      child: Container(
-                        padding: EdgeInsets.all(24.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Discount Badge
-                            Container(
-                              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                              decoration: BoxDecoration(
-                                color: Colors.red,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Text(
-                                '$discountPercentage% OFF',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: 12),
-                            // Title
-                            Text(
-                              item['title'],
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 28,
-                                fontWeight: FontWeight.bold,
-                                shadows: [
-                                  Shadow(
-                                    blurRadius: 10.0,
-                                    color: Colors.black.withOpacity(0.3),
-                                    offset: Offset(0, 2),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(height: 8),
-                            // Description
-                            Text(
-                              item['description'],
-                              style: TextStyle(
-                                color: Colors.white.withOpacity(0.9),
-                                fontSize: 16,
-                                shadows: [
-                                  Shadow(
-                                    blurRadius: 8.0,
-                                    color: Colors.black.withOpacity(0.3),
-                                    offset: Offset(0, 1),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(height: 12),
-                            // Price Row
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Rp ${NumberFormat('#,###').format(item['originalPrice'])}",
-                                      style: TextStyle(
-                                        color: Colors.white.withOpacity(0.7),
-                                        fontSize: 16,
-                                        decoration: TextDecoration.lineThrough,
-                                      ),
-                                    ),
-                                    Text(
-                                      "Rp ${NumberFormat('#,###').format(discountedPrice)}",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.bold,
-                                        shadows: [
-                                          Shadow(
-                                            blurRadius: 10.0,
-                                            color: Colors.black.withOpacity(0.3),
-                                            offset: Offset(0, 2),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Spacer(),
-                                // Shop Now Button
-                                ElevatedButton(
-                                  onPressed: () {
-                                    Get.to(() => ProductPage(
-                                      title: item['title'],
-                                      price: discountedPrice.toInt(),
-                                      imagePath: item['imagePath'],
-                                    ));
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Color(0xFFD3A335),
-                                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    elevation: 4,
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        "Shop Now",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
                 ),
-              ),
+                // Tombol "Shop Now" mengarah ke Store Page
+                Positioned(
+                  bottom: 16,
+                  right: 16,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      // Navigasi ke halaman Store Page
+                      Get.offAll(() => StorePage());
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFFD3A335),
+                    ),
+                    child: Text(
+                      "Shop Now",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+              ],
             );
           },
         );
       }).toList(),
-    );
-  }
-
-  Widget _buildBrandSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              "Brand",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                Get.to(() => AllBrandsPage()); // Navigasi ke halaman AllBrandsPage
-              },
-              child: Text(
-                "See all",
-                style: TextStyle(fontSize: 16, color: Color(0xFFD3A335)),
-              ),
-            ),
-          ],
-        ),
-        SizedBox(height: 16),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            _buildBrandCard('Puma', 'assets/puma.png'),
-            _buildBrandCard('Nike', 'assets/nike.png'),
-            _buildBrandCard('Adidas', 'assets/adidas.png'),
-            _buildBrandCard('Reebok', 'assets/reebok.png'),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildBrandCard(String brandName, String assetPath) {
-    return GestureDetector(
-      onTap: () {
-        Get.to(() => BrandProductsPage(brandName: brandName));
-      },
-      child: Column(
-        children: [
-          Container(
-            width: 80,
-            height: 80,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.3),
-                  blurRadius: 10,
-                  offset: Offset(0, 4),
-                ),
-              ],
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Image.asset(
-                assetPath,
-                fit: BoxFit.contain,
-              ),
-            ),
-          ),
-          SizedBox(height: 8),
-          Text(
-            brandName,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-            ),
-          ),
-        ],
-      ),
     );
   }
 

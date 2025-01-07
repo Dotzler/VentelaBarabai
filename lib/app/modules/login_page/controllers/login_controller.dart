@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:SneakerSpace/app/auth_controller.dart';
+import 'package:VentelaBarabai/app/auth_controller.dart';
 
 class LoginController extends GetxController {
   final AuthController _authController = Get.put(AuthController());

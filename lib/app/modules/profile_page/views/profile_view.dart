@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:SneakerSpace/app/auth_controller.dart';
-import 'package:SneakerSpace/app/modules/edit_profile_page/views/edit_profil_view.dart';
-import 'package:SneakerSpace/app/modules/profile_page/controllers/profil_controller.dart';
-import 'package:SneakerSpace/app/storage_controller.dart';
+import 'package:VentelaBarabai/app/auth_controller.dart';
+import 'package:VentelaBarabai/app/modules/edit_profile_page/views/edit_profil_view.dart';
+import 'package:VentelaBarabai/app/modules/profile_page/controllers/profil_controller.dart';
+import 'package:VentelaBarabai/app/storage_controller.dart';
 import 'package:get/get.dart';
 
 class ProfilePage extends StatelessWidget {

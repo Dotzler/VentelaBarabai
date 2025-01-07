@@ -1,7 +1,7 @@
-import 'package:SneakerSpace/app/modules/buypage/views/buypage_view.dart';
-import 'package:SneakerSpace/app/modules/cart_page/controllers/cart_controller.dart';
-import 'package:SneakerSpace/app/modules/order/controllers/order_controller.dart';
-import 'package:SneakerSpace/app/modules/reviewPage/views/review_page_view.dart';
+import 'package:VentelaBarabai/app/modules/buypage/views/buypage_view.dart';
+import 'package:VentelaBarabai/app/modules/cart_page/controllers/cart_controller.dart';
+import 'package:VentelaBarabai/app/modules/order/controllers/order_controller.dart';
+import 'package:VentelaBarabai/app/modules/reviewPage/views/review_page_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

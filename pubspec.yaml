@@ -1,4 +1,4 @@
-name: SneakerSpace
+name: VentelaBarabai
 version: 1.0.0+1
 publish_to: none
 description: A new Flutter project.
@@ -43,37 +43,16 @@ dev_dependencies:
 flutter: 
   uses-material-design: true
   assets: 
-  - assets/adidas.png
-  - assets/default_profile_picture.png
-  - assets/nike.png
-  - assets/puma.png
-  - assets/reebok.png
-  - assets/SneakerSpace.png
-  - assets/Jordan-1-High-OG-Travis-Scott-x-Fragment-1.png
-  - assets/af1peaceminusone.png
-  - assets/ajhigh.png
-  - assets/ajlow.png
-  - assets/nb530.png
-  - assets/nmdr1.png
-  - assets/rbcls.png
-  - assets/SambaOG.png
-  - assets/superstar.png
-  - assets/converse.png
-  - assets/new_balance.png
-  - assets/asics.png
-  - assets/fila.png
-  - assets/la-stravaganza.mp3
-  - assets/background.mp3
-  - assets/ROSÉ_BrunoMars-APT.mp3
-  - assets/Nike-Air-Max-97.png
-  - assets/Yeezy-Slides.png
-  - assets/SUPER_STAR_SHOES.png
-  - assets/FORUM_LOW_CS_SHOES.png
-  - assets/campus_vulc_shoes.png
-  - assets/AIR+JORDAN+1+MID.png
-  - assets/AIR+JORDAN+1+LOW.png
-  - assets/AIR+JORDAN+LEGACY+312+LOW.png
-  - assets/AIR+JORDAN+4+RETRO.png
-  - assets/Sepatu-Sneaker-Suede-Unisex-Blackbeard-Teech-PUMA-x-ONE-PIECE.png
-  - assets/Sepatu-Sneaker-Suede-Unisex-Red-Haired-Shanks-PUMA-x-ONE-PIECE.png
-  - assets/Sepatu-Sneaker-Suede-Unisex-Buggy-the-Genius-Jester-PUMA-x-ONE-PIECE.png
+  - assets/ventelabarabai.png
+  - assets/backTo70s.png
+  - assets/highnatural.png
+  - assets/lownatural.png
+  - assets/ventela-ethnic-highblack-natural-1.png
+  - assets/ventela-reborn-black.png
+  - assets/christmasNewYear.png
+  - assets/backToSchool.png
+  - assets/publiclowgrey.png
+  - assets/publiclowcream.png
+  - assets/evergreen.png
+  - assets/backTo70swhite.png
+  - assets/juniorblack.png

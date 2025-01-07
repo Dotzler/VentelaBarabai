@@ -1,6 +1,6 @@
-import 'package:SneakerSpace/app/auth_controller.dart';
-import 'package:SneakerSpace/app/modules/forget_password/views/forget_password_view.dart';
-import 'package:SneakerSpace/app/modules/signup_page/views/signup_view.dart';
+import 'package:VentelaBarabai/app/auth_controller.dart';
+import 'package:VentelaBarabai/app/modules/forget_password/views/forget_password_view.dart';
+import 'package:VentelaBarabai/app/modules/signup_page/views/signup_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
